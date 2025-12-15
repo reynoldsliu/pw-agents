@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>場景 5: 檔案上傳</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>📁 場景 5: 檔案上傳</h1>
+        
+        <div class="file-upload-area" id="uploadArea">
+            <p>📤 點擊或拖放檔案到此處</p>
+            <input type="file" id="fileInput" style="display: none;" accept="image/*,.pdf,.txt">
+        </div>
+
+        <div class="file-info" id="fileInfo">
+            <h3>檔案資訊</h3>
+            <p><strong>檔案名稱:</strong> <span id="fileName"></span></p>
+            <p><strong>檔案大小:</strong> <span id="fileSize"></span></p>
+            <p><strong>檔案類型:</strong> <span id="fileType"></span></p>
+        </div>
+
+        <button id="uploadBtn" style="display: none; margin-top: 20px;">確認上傳</button>
+
+        <div id="result" class="message"></div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const result = document.getElementById('result');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                displayFileInfo(this.files[0]);
+            }
+        });
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.background = '#e7f3ff';
+        });
+
+        uploadArea.addEventListener('dragleave', function() {
+            this.style.background = '';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.background = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                displayFileInfo(e.dataTransfer.files[0]);
+            }
+        });
+
+        function displayFileInfo(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatBytes(file.size);
+            document.getElementById('fileType').textContent = file.type || '未知';
+            
+            fileInfo.classList.add('show');
+            uploadBtn.style.display = 'block';
+        }
+
+        uploadBtn.addEventListener('click', function() {
+            result.textContent = '✅ 檔案上傳成功！';
+            result.className = 'message success show';
+            
+            setTimeout(() => {
+                fileInfo.classList.remove('show');
+                uploadBtn.style.display = 'none';
+                result.classList.remove('show');
+            }, 3000);
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>

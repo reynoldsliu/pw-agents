@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>場景 1: 表單登入驗證</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🔐 場景 1: 表單登入驗證</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">使用者名稱</label>
+                <input type="text" id="username" name="username" placeholder="請輸入 testuser">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <input type="password" id="password" name="password" placeholder="請輸入 Test@1234">
+            </div>
+            
+            <button type="submit">登入</button>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            
+            // 模擬登入驗證
+            if (username === 'testuser' && password === 'Test@1234') {
+                messageDiv.textContent = '✅ 登入成功！您已登入到安全區域。';
+                messageDiv.className = 'message success show';
+                
+                // 2秒後跳轉到成功頁面
+                setTimeout(() => {
+                    window.location.href = 'secure.html';
+                }, 2000);
+            } else {
+                messageDiv.textContent = '❌ 登入失敗！使用者名稱或密碼錯誤。';
+                messageDiv.className = 'message error show';
+            }
+        });
+    </script>
+</body>
+</html>

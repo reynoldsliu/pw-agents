@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全區域</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🎉 登入成功！</h1>
+        <div class="message success show">
+            <p>歡迎來到安全區域！您已成功登入系統。</p>
+        </div>
+        
+        <button id="logoutBtn">登出</button>
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            alert('已登出');
+            window.location.href = 'form-auth.html';
+        });
+    </script>
+</body>
+</html>

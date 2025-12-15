@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>場景 3: 下拉選單驗證</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>📋 場景 3: 下拉選單驗證</h1>
+        
+        <div class="form-group">
+            <label for="dropdown">請選擇一個選項</label>
+            <select id="dropdown" name="dropdown">
+                <option value="" disabled selected>請選擇...</option>
+                <option value="1">選項 1</option>
+                <option value="2">選項 2</option>
+                <option value="3">選項 3</option>
+            </select>
+        </div>
+
+        <div id="result" class="message"></div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('dropdown').addEventListener('change', function() {
+            const selectedValue = this.value;
+            const selectedText = this.options[this.selectedIndex].text;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.textContent = `✅ 您選擇了：${selectedText} (值: ${selectedValue})`;
+            resultDiv.className = 'message success show';
+        });
+    </script>
+</body>
+</html>

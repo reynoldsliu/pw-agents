@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>場景 4: 拖放互動</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🎯 場景 4: 拖放互動</h1>
+        
+        <p>將方塊 A 拖放到方塊 B 的位置</p>
+
+        <div class="drag-drop-container">
+            <div class="drag-item" id="boxA" draggable="true">
+                <h3>方塊 A</h3>
+            </div>
+            <div class="drop-zone" id="boxB">
+                <h3>方塊 B (放置區域)</h3>
+            </div>
+        </div>
+
+        <div id="result" class="message"></div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        const boxA = document.getElementById('boxA');
+        const boxB = document.getElementById('boxB');
+        const result = document.getElementById('result');
+
+        boxA.addEventListener('dragstart', function(e) {
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        });
+
+        boxA.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+
+        boxB.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        boxB.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+
+        boxB.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const data = e.dataTransfer.getData('text/html');
+            this.innerHTML = data;
+            boxA.innerHTML = '<h3>方塊 B</h3>';
+            
+            result.textContent = '✅ 拖放成功！方塊已交換位置。';
+            result.className = 'message success show';
+        });
+    </script>
+</body>
+</html>

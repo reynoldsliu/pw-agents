@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>場景 2: 動態載入驗證</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>⏳ 場景 2: 動態載入驗證</h1>
+        
+        <p>點擊下方按鈕開始載入動態內容</p>
+        
+        <button id="startBtn">開始載入</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>載入中...</p>
+        </div>
+
+        <div class="dynamic-content" id="content">
+            <h2>🎉 Hello World!</h2>
+            <p>動態內容已成功載入！</p>
+        </div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('startBtn').addEventListener('click', function() {
+            const button = this;
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+            
+            // 隱藏按鈕，顯示載入動畫
+            button.style.display = 'none';
+            loading.classList.add('show');
+            
+            // 模擬 3 秒載入時間
+            setTimeout(() => {
+                loading.classList.remove('show');
+                content.classList.add('show');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
