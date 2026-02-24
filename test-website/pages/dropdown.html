@@ -12,7 +12,7 @@
         
         <div class="form-group">
             <label for="dropdown">請選擇一個選項</label>
-            <select id="dropdown" name="dropdown">
+            <select id="dropdown" name="dropdown" data-testid="dropdown-select">
                 <option value="" disabled selected>請選擇...</option>
                 <option value="1">選項 1</option>
                 <option value="2">選項 2</option>
@@ -20,9 +20,9 @@
             </select>
         </div>
 
-        <div id="result" class="message"></div>
+        <div id="result" class="message" data-testid="dropdown-result"></div>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="dropdown-back-link">← 返回首頁</a>
     </div>
 
     <script>

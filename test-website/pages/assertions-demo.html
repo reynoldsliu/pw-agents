@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 07: 斷言示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+        .state-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.85rem; }
+        .badge.active { background: #e8f5e9; color: #2e7d32; }
+        .badge.inactive { background: #fce4ec; color: #c62828; }
+        .badge.warning { background: #fff3e0; color: #e65100; }
+        .item-list li { padding: 8px; border-bottom: 1px solid #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>✅ Day 07: 斷言示範</h1>
+
+        <!-- toBeVisible / toBeHidden -->
+        <section class="demo-section">
+            <h2>toBeVisible / toBeHidden</h2>
+            <div id="visible-item" style="padding:8px; background:#e8f5e9; border-radius:4px;">👁️ 我是可見元素</div>
+            <div id="hidden-item" style="display:none;">🙈 我是隱藏元素</div>
+            <button id="toggle-visibility-btn" style="margin-top:8px;">切換可見性</button>
+        </section>
+
+        <!-- toBeEnabled / toBeDisabled -->
+        <section class="demo-section">
+            <h2>toBeEnabled / toBeDisabled</h2>
+            <button id="enabled-btn">啟用按鈕</button>
+            <button id="disabled-btn" disabled>停用按鈕</button>
+            <button id="toggle-disabled-btn" style="margin-left:10px;">切換啟用狀態</button>
+        </section>
+
+        <!-- toBeChecked -->
+        <section class="demo-section">
+            <h2>toBeChecked</h2>
+            <label><input type="checkbox" id="checked-box" checked> 預設已勾選</label>
+            <label style="margin-left:15px;"><input type="checkbox" id="unchecked-box"> 預設未勾選</label>
+        </section>
+
+        <!-- toHaveText / toContainText -->
+        <section class="demo-section">
+            <h2>toHaveText / toContainText</h2>
+            <div id="exact-text">Playwright 測試框架</div>
+            <div id="partial-text">本系統採用 <strong>Playwright</strong> 作為自動化測試工具</div>
+        </section>
+
+        <!-- toHaveValue -->
+        <section class="demo-section">
+            <h2>toHaveValue</h2>
+            <input type="text" id="value-input" value="預設文字內容">
+            <input type="number" id="number-input" value="42">
+        </section>
+
+        <!-- toHaveAttribute -->
+        <section class="demo-section">
+            <h2>toHaveAttribute</h2>
+            <a id="link-with-href" href="https://playwright.dev" target="_blank">Playwright 官網</a>
+            <img id="img-with-alt" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="示範圖片" width="1" height="1">
+        </section>
+
+        <!-- toHaveClass -->
+        <section class="demo-section">
+            <h2>toHaveClass</h2>
+            <div id="class-item" class="badge active">狀態正常</div>
+            <div id="warning-item" class="badge warning" style="margin-left:10px;">注意事項</div>
+        </section>
+
+        <!-- toHaveCount -->
+        <section class="demo-section">
+            <h2>toHaveCount</h2>
+            <ul class="item-list" id="item-list">
+                <li class="list-item">項目一</li>
+                <li class="list-item">項目二</li>
+                <li class="list-item">項目三</li>
+            </ul>
+            <button id="add-item-btn" style="margin-top:8px;">新增項目</button>
+        </section>
+
+        <!-- toHaveURL / toHaveTitle → tested via page itself -->
+        <section class="demo-section">
+            <h2>toHaveTitle (此頁標題)</h2>
+            <p>頁面標題為：<code>Day 07: 斷言示範</code></p>
+        </section>
+
+        <!-- Soft assertion demo -->
+        <section class="demo-section">
+            <h2>Soft Assertions 示範元素</h2>
+            <div class="state-grid">
+                <div id="soft-a" class="badge active">軟斷言 A (可見)</div>
+                <div id="soft-b" class="badge inactive" style="display:none;">軟斷言 B (隱藏)</div>
+            </div>
+        </section>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        let itemCount = 3;
+        document.getElementById('toggle-visibility-btn').addEventListener('click', () => {
+            const el = document.getElementById('hidden-item');
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        });
+        document.getElementById('toggle-disabled-btn').addEventListener('click', () => {
+            const btn = document.getElementById('enabled-btn');
+            btn.disabled = !btn.disabled;
+        });
+        document.getElementById('add-item-btn').addEventListener('click', () => {
+            itemCount++;
+            const li = document.createElement('li');
+            li.className = 'list-item';
+            li.textContent = `項目${itemCount === 4 ? '四' : itemCount === 5 ? '五' : itemCount}`;
+            document.getElementById('item-list').appendChild(li);
+        });
+    </script>
+</body>
+</html>

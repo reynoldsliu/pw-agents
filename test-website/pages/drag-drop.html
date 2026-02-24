@@ -13,17 +13,17 @@
         <p>將方塊 A 拖放到方塊 B 的位置</p>
 
         <div class="drag-drop-container">
-            <div class="drag-item" id="boxA" draggable="true">
+            <div class="drag-item" id="boxA" draggable="true" data-testid="drag-source">
                 <h3>方塊 A</h3>
             </div>
-            <div class="drop-zone" id="boxB">
+            <div class="drop-zone" id="boxB" data-testid="drag-target">
                 <h3>方塊 B (放置區域)</h3>
             </div>
         </div>
 
-        <div id="result" class="message"></div>
+        <div id="result" class="message" data-testid="drag-result"></div>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="drag-back-link">← 返回首頁</a>
     </div>
 
     <script>

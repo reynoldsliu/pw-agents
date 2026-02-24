@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 18: 非同步輪詢示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .counter-display { font-size: 3rem; font-weight: bold; text-align: center;
+                           color: #667eea; padding: 20px; }
+        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px;
+                        font-weight: bold; margin: 5px; }
+        .status-idle { background: #e0e0e0; color: #616161; }
+        .status-loading { background: #fff3e0; color: #e65100; }
+        .status-ready { background: #e8f5e9; color: #2e7d32; }
+        .status-done { background: #e8eaf6; color: #3949ab; }
+        .api-section { background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2);
+                         border-radius: 4px; transition: width 0.5s; width: 0%; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>⏱️ Day 18: 非同步輪詢示範</h1>
+        <p>練習 <code>expect.poll()</code>、<code>waitForResponse</code>、<code>waitForLoadState</code></p>
+
+        <!-- 計數器 (expect.poll 示範) -->
+        <section class="demo-section">
+            <h2>expect.poll() — 計數器</h2>
+            <div class="counter-display" id="counter">0</div>
+            <div style="text-align:center;">
+                <button id="start-counter-btn">開始計數</button>
+                <button id="reset-counter-btn" style="margin-left:10px; background:none; border:1px solid #ccc; color:#666; padding:8px 16px; border-radius:4px; cursor:pointer;">重置</button>
+            </div>
+            <p style="text-align:center; color:#888; font-size:0.85rem;">計數到 5 時狀態變為「就緒」</p>
+            <div style="text-align:center; margin-top:8px;">
+                狀態：<span id="counter-status" class="status-badge status-idle">閒置</span>
+            </div>
+        </section>
+
+        <!-- 模擬 API 請求 (waitForResponse 示範) -->
+        <section class="demo-section">
+            <h2>waitForResponse — 模擬 API 載入</h2>
+            <button id="fetch-data-btn">載入資料</button>
+            <div class="api-section" style="margin-top:10px;">
+                <div>狀態：<span id="api-status" class="status-badge status-idle">待請求</span></div>
+                <div id="api-result" style="margin-top:8px; display:none;">
+                    <strong>載入的資料：</strong>
+                    <ul id="api-data-list" style="list-style:none; padding:0; margin-top:5px;"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 進度條 (輪詢等待) -->
+        <section class="demo-section">
+            <h2>進度等待示範</h2>
+            <button id="start-progress-btn">開始處理</button>
+            <div class="progress-bar" style="margin-top:10px;">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div id="progress-text" style="text-align:right; font-size:0.85rem; color:#888;">0%</div>
+            <div id="progress-status" class="status-badge status-idle" style="margin-top:5px;">等待開始</div>
+        </section>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        // 計數器
+        let counterInterval = null;
+        let count = 0;
+        const counterEl = document.getElementById('counter');
+        const counterStatus = document.getElementById('counter-status');
+
+        document.getElementById('start-counter-btn').addEventListener('click', function() {
+            if (counterInterval) return;
+            this.disabled = true;
+            counterInterval = setInterval(() => {
+                count++;
+                counterEl.textContent = count;
+                if (count >= 5) {
+                    counterStatus.textContent = '就緒';
+                    counterStatus.className = 'status-badge status-ready';
+                } else {
+                    counterStatus.textContent = '計數中...';
+                    counterStatus.className = 'status-badge status-loading';
+                }
+                if (count >= 10) {
+                    clearInterval(counterInterval);
+                    counterInterval = null;
+                    counterStatus.textContent = '完成';
+                    counterStatus.className = 'status-badge status-done';
+                }
+            }, 500);
+        });
+
+        document.getElementById('reset-counter-btn').addEventListener('click', function() {
+            clearInterval(counterInterval);
+            counterInterval = null;
+            count = 0;
+            counterEl.textContent = '0';
+            counterStatus.textContent = '閒置';
+            counterStatus.className = 'status-badge status-idle';
+            document.getElementById('start-counter-btn').disabled = false;
+        });
+
+        // 模擬 API 請求
+        document.getElementById('fetch-data-btn').addEventListener('click', async function() {
+            this.disabled = true;
+            const apiStatus = document.getElementById('api-status');
+            apiStatus.textContent = '載入中...';
+            apiStatus.className = 'status-badge status-loading';
+
+            // 模擬 API 延遲
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const data = ['使用者資料已更新', '系統狀態正常', '最後同步：剛剛'];
+            const list = document.getElementById('api-data-list');
+            list.innerHTML = '';
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = '• ' + item;
+                li.style.padding = '2px 0';
+                list.appendChild(li);
+            });
+
+            document.getElementById('api-result').style.display = 'block';
+            apiStatus.textContent = '載入完成';
+            apiStatus.className = 'status-badge status-ready';
+            this.disabled = false;
+        });
+
+        // 進度條
+        document.getElementById('start-progress-btn').addEventListener('click', async function() {
+            this.disabled = true;
+            const fill = document.getElementById('progress-fill');
+            const text = document.getElementById('progress-text');
+            const status = document.getElementById('progress-status');
+            status.textContent = '處理中...';
+            status.className = 'status-badge status-loading';
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                fill.style.width = progress + '%';
+                text.textContent = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    status.textContent = '處理完成！';
+                    status.className = 'status-badge status-ready';
+                    this.disabled = false;
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

@@ -12,19 +12,19 @@
         
         <p>點擊下方按鈕開始載入動態內容</p>
         
-        <button id="startBtn">開始載入</button>
+        <button id="startBtn" data-testid="dynamic-start-btn">開始載入</button>
 
-        <div class="loading" id="loading">
+        <div class="loading" id="loading" data-testid="dynamic-loading-indicator">
             <div class="spinner"></div>
             <p>載入中...</p>
         </div>
 
-        <div class="dynamic-content" id="content">
+        <div class="dynamic-content" id="content" data-testid="dynamic-result">
             <h2>🎉 Hello World!</h2>
             <p>動態內容已成功載入！</p>
         </div>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="dynamic-back-link">← 返回首頁</a>
     </div>
 
     <script>

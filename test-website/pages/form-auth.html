@@ -13,35 +13,52 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">使用者名稱</label>
-                <input type="text" id="username" name="username" placeholder="請輸入 testuser">
+                <input type="text" id="username" name="username"
+                       data-testid="auth-form-username-input"
+                       aria-label="使用者名稱"
+                       placeholder="請輸入 testuser">
             </div>
-            
+
             <div class="form-group">
                 <label for="password">密碼</label>
-                <input type="password" id="password" name="password" placeholder="請輸入 Test@1234">
+                <input type="password" id="password" name="password"
+                       data-testid="auth-form-password-input"
+                       aria-label="密碼"
+                       placeholder="請輸入 Test@1234">
             </div>
-            
-            <button type="submit">登入</button>
+
+            <button type="submit" data-testid="auth-form-login-btn">登入</button>
         </form>
 
-        <div id="message" class="message"></div>
+        <div id="message" class="message" data-testid="auth-form-message"></div>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="auth-form-back-link">← 返回首頁</a>
     </div>
 
     <script>
+        // 支援多使用者（Day 29 多角色 storageState 示範）
+        const USERS = {
+            'testuser': { password: 'Test@1234', role: '一般使用者', displayName: '測試用戶' },
+            'admin':    { password: 'Admin@1234', role: '管理員', displayName: '系統管理員' },
+            'editor':   { password: 'Editor@1234', role: '編輯者', displayName: '內容編輯' },
+            'viewer':   { password: 'Viewer@1234', role: '檢視者', displayName: '唯讀訪客' }
+        };
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const messageDiv = document.getElementById('message');
-            
-            // 模擬登入驗證
-            if (username === 'testuser' && password === 'Test@1234') {
+            const user = USERS[username];
+
+            if (user && user.password === password) {
                 messageDiv.textContent = '✅ 登入成功！您已登入到安全區域。';
                 messageDiv.className = 'message success show';
-                
+                // 儲存使用者資訊到 localStorage
+                localStorage.setItem('currentUser', username);
+                localStorage.setItem('currentRole', user.role);
+                localStorage.setItem('displayName', user.displayName);
                 // 2秒後跳轉到成功頁面
                 setTimeout(() => {
                     window.location.href = 'secure.html';

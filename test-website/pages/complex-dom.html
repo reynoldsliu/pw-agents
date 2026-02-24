@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 15: 複雜 DOM 定位示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 15px 0; }
+        .product-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; }
+        .product-card .price { font-size: 1.2rem; font-weight: bold; color: #667eea; }
+        .product-card .stock { font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; }
+        .in-stock { background: #e8f5e9; color: #2e7d32; }
+        .out-of-stock { background: #fce4ec; color: #c62828; }
+        .add-cart-btn { width: 100%; padding: 8px; margin-top: 8px; background: #667eea;
+                        color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .add-cart-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .nested-list { list-style: none; padding: 0; }
+        .nested-list > li { padding: 8px; border-left: 3px solid #667eea; margin: 6px 0; }
+        .nested-list > li > ul { list-style: disc; padding-left: 20px; margin-top: 5px; }
+        .highlight { background: yellow; }
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧩 Day 15: 複雜 DOM 定位示範</h1>
+        <p>練習 CSS Selector、XPath、<code>:has()</code>、<code>:has-text()</code>、Chaining</p>
+
+        <!-- CSS Selector 定位 -->
+        <section class="demo-section">
+            <h2>CSS Selector — 商品卡片</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div>筆記型電腦</div>
+                    <div class="price">$32,000</div>
+                    <span class="stock in-stock">有庫存</span>
+                    <button class="add-cart-btn">加入購物車</button>
+                </div>
+                <div class="product-card">
+                    <div>無線滑鼠</div>
+                    <div class="price">$890</div>
+                    <span class="stock out-of-stock">無庫存</span>
+                    <button class="add-cart-btn" disabled>加入購物車</button>
+                </div>
+                <div class="product-card">
+                    <div>機械鍵盤</div>
+                    <div class="price">$3,500</div>
+                    <span class="stock in-stock">有庫存</span>
+                    <button class="add-cart-btn">加入購物車</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- :has-text() 定位 -->
+        <section class="demo-section">
+            <h2>:has-text() — 尋找含特定文字的容器</h2>
+            <div class="info-block" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <strong>重要公告：</strong>系統將於本週六進行維護
+            </div>
+            <div class="info-block" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <strong>一般通知：</strong>新功能已正式上線
+            </div>
+            <div class="info-block" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <strong>重要公告：</strong>密碼安全政策更新
+            </div>
+        </section>
+
+        <!-- :has() 定位 -->
+        <section class="demo-section">
+            <h2>:has() — 找到包含特定子元素的容器</h2>
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <span class="order-id">訂單 #A001</span>
+                <span class="status-tag" style="color:green;">已完成</span>
+                <button class="view-btn" style="float:right;">查看</button>
+            </div>
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <span class="order-id">訂單 #A002</span>
+                <span class="status-tag pending-tag" style="color:orange;">待處理</span>
+                <button class="view-btn" style="float:right;">查看</button>
+                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;">取消</button>
+            </div>
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+                <span class="order-id">訂單 #A003</span>
+                <span class="status-tag pending-tag" style="color:orange;">待處理</span>
+                <button class="view-btn" style="float:right;">查看</button>
+                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;">取消</button>
+            </div>
+        </section>
+
+        <!-- Locator Chaining -->
+        <section class="demo-section">
+            <h2>Locator Chaining — 嵌套定位</h2>
+            <ul class="nested-list">
+                <li id="category-frontend">
+                    前端技術
+                    <ul>
+                        <li>React</li>
+                        <li>Vue.js</li>
+                        <li>Playwright</li>
+                    </ul>
+                </li>
+                <li id="category-backend">
+                    後端技術
+                    <ul>
+                        <li>Node.js</li>
+                        <li>Python</li>
+                        <li>Java</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <!-- XPath 定位 -->
+        <section class="demo-section">
+            <h2>XPath 定位</h2>
+            <div id="xpath-section">
+                <p class="xpath-target">第一段：這是 XPath 定位目標</p>
+                <p class="xpath-target">第二段：另一個 XPath 定位目標</p>
+                <span id="xpath-span">透過 XPath id 定位</span>
+            </div>
+        </section>
+
+        <div id="result" class="message" style="margin-top:10px;"></div>
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        const result = document.getElementById('result');
+        document.querySelectorAll('.add-cart-btn:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const name = this.closest('.product-card').querySelector('div:first-child').textContent;
+                result.textContent = `✅ 已將「${name}」加入購物車`;
+                result.className = 'message success show';
+            });
+        });
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const orderId = this.closest('.order-item').querySelector('.order-id').textContent;
+                result.textContent = `🗑️ 已取消 ${orderId}`;
+                result.className = 'message error show';
+            });
+        });
+    </script>
+</body>
+</html>

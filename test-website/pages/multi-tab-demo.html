@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 19: 多分頁處理示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tab-btn { display: block; width: 100%; padding: 12px 16px; margin: 8px 0;
+                   background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+                   border: none; border-radius: 6px; cursor: pointer; text-align: left;
+                   font-size: 0.95rem; }
+        .tab-btn:hover { opacity: 0.9; }
+        .external-link { display: block; padding: 12px 16px; margin: 8px 0;
+                         background: #f5f5f5; border: 1px solid #e0e0e0;
+                         border-radius: 6px; text-decoration: none; color: #333; }
+        .external-link:hover { background: #e8eaf6; }
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>🗂️ Day 19: 多分頁處理示範</h1>
+        <p>練習 <code>context.waitForEvent('page')</code>、<code>page.waitForEvent('popup')</code></p>
+
+        <!-- target="_blank" 連結 -->
+        <section class="demo-section">
+            <h2>target="_blank" — 在新分頁開啟連結</h2>
+            <a href="form-auth.html" target="_blank" class="external-link" id="new-tab-link">
+                🔗 在新分頁開啟登入頁面（target="_blank"）
+            </a>
+            <a href="locators-demo.html" target="_blank" class="external-link" id="locator-tab-link">
+                🔗 在新分頁開啟定位示範頁面
+            </a>
+        </section>
+
+        <!-- window.open() popup -->
+        <section class="demo-section">
+            <h2>window.open() — 觸發 popup 視窗</h2>
+            <button class="tab-btn" id="open-popup-btn">
+                🪟 開啟 Popup 視窗（assertions-demo）
+            </button>
+            <button class="tab-btn" id="open-table-btn" style="background: linear-gradient(135deg, #43a047, #1b5e20);">
+                🪟 開啟 Popup 視窗（table-demo）
+            </button>
+        </section>
+
+        <!-- 頁面間通訊 -->
+        <section class="demo-section">
+            <h2>頁面資訊</h2>
+            <p>目前頁面標題：<strong id="page-title">Day 19: 多分頁處理示範</strong></p>
+            <p>目前頁面 URL：<code id="page-url"></code></p>
+        </section>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('page-url').textContent = window.location.href;
+
+        document.getElementById('open-popup-btn').addEventListener('click', function() {
+            window.open('assertions-demo.html', 'assertionsPopup', 'width=800,height=600,scrollbars=yes');
+        });
+
+        document.getElementById('open-table-btn').addEventListener('click', function() {
+            window.open('table-demo.html', 'tablePopup', 'width=900,height=600,scrollbars=yes');
+        });
+    </script>
+</body>
+</html>

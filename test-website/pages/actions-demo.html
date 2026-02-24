@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 06: Actions 互動示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tooltip-container { position: relative; display: inline-block; margin: 10px; }
+        .tooltip { display: none; position: absolute; background: #333; color: white;
+                   padding: 5px 10px; border-radius: 4px; bottom: 120%; left: 50%;
+                   transform: translateX(-50%); white-space: nowrap; z-index: 10; }
+        .tooltip-container:hover .tooltip { display: block; }
+        .dblclick-area { padding: 20px; border: 2px dashed #667eea; border-radius: 8px;
+                         text-align: center; cursor: pointer; }
+        .dblclick-area.activated { background: #e8f0fe; border-style: solid; }
+        .demo-section { border-top: 1px solid #eee; padding: 15px 0; margin: 10px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 1rem; margin-bottom: 10px; }
+        .click-counter { font-size: 1.5rem; font-weight: bold; color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>⚡ Day 06: Actions 互動示範</h1>
+
+        <!-- click / dblclick -->
+        <section class="demo-section">
+            <h2>click / dblclick</h2>
+            <button id="click-btn">點擊我</button>
+            <span class="click-counter" id="click-count">0</span> 次
+            <div class="dblclick-area" id="dblclick-area">雙擊此區域啟動</div>
+        </section>
+
+        <!-- fill / pressSequentially -->
+        <section class="demo-section">
+            <h2>fill / pressSequentially</h2>
+            <div class="form-group">
+                <label for="fill-input">填入文字 (fill)</label>
+                <input type="text" id="fill-input" placeholder="使用 fill() 填入">
+            </div>
+            <div class="form-group">
+                <label for="type-input">逐字輸入 (pressSequentially)</label>
+                <input type="text" id="type-input" placeholder="使用 pressSequentially() 輸入">
+            </div>
+            <div class="form-group">
+                <label for="textarea-input">多行文字</label>
+                <textarea id="textarea-input" rows="3" placeholder="按 Enter 換行"></textarea>
+            </div>
+        </section>
+
+        <!-- check / uncheck -->
+        <section class="demo-section">
+            <h2>check / uncheck</h2>
+            <div class="form-group">
+                <label><input type="checkbox" id="check-terms"> 我同意服務條款</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="check-newsletter" checked> 訂閱電子報</label>
+            </div>
+        </section>
+
+        <!-- selectOption -->
+        <section class="demo-section">
+            <h2>selectOption</h2>
+            <div class="form-group">
+                <label for="select-country">選擇國家</label>
+                <select id="select-country">
+                    <option value="">請選擇...</option>
+                    <option value="tw">台灣</option>
+                    <option value="jp">日本</option>
+                    <option value="us">美國</option>
+                    <option value="uk">英國</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- hover -->
+        <section class="demo-section">
+            <h2>hover</h2>
+            <div class="tooltip-container">
+                <button id="hover-btn">懸停在我上面</button>
+                <div class="tooltip" id="tooltip-text">🎉 你找到了！hover 觸發成功</div>
+            </div>
+        </section>
+
+        <!-- keyboard press -->
+        <section class="demo-section">
+            <h2>press (鍵盤)</h2>
+            <div class="form-group">
+                <label for="key-input">按下 Enter 送出</label>
+                <input type="text" id="key-input" placeholder="輸入後按 Enter...">
+            </div>
+        </section>
+
+        <div id="action-log" class="message" style="margin-top: 10px;"></div>
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        const log = document.getElementById('action-log');
+        function showLog(msg) {
+            log.textContent = msg;
+            log.className = 'message success show';
+        }
+
+        let clicks = 0;
+        document.getElementById('click-btn').addEventListener('click', () => {
+            clicks++;
+            document.getElementById('click-count').textContent = clicks;
+            showLog(`✅ 已點擊 ${clicks} 次`);
+        });
+
+        document.getElementById('dblclick-area').addEventListener('dblclick', function() {
+            this.classList.toggle('activated');
+            showLog(this.classList.contains('activated') ? '✅ 雙擊已啟動' : '⬜ 雙擊已停用');
+        });
+
+        document.getElementById('key-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                showLog(`✅ 按下 Enter，輸入內容：${this.value}`);
+            }
+        });
+
+        document.getElementById('key-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                showLog(`✅ 按下 Escape，已清除焦點`);
+                this.blur();
+            }
+        });
+
+        document.getElementById('select-country').addEventListener('change', function() {
+            showLog(`✅ 已選擇：${this.options[this.selectedIndex].text}`);
+        });
+
+        document.getElementById('check-terms').addEventListener('change', function() {
+            showLog(`✅ 服務條款：${this.checked ? '已勾選' : '已取消'}`);
+        });
+    </script>
+</body>
+</html>

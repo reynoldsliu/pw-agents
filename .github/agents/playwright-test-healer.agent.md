@@ -61,3 +61,17 @@ Key principles:
   of the expected behavior.
 - Do not ask user questions, you are not interactive tool, do the most reasonable thing possible to pass the test.
 - Never wait for networkidle or use other discouraged or deprecated apis
+
+# Locator Fix Priority
+
+When fixing broken locators, always migrate to the most stable selector in this priority order:
+
+1. **`[data-testid="..."]`** — preferred; import `byTestId` from `tests/test-helpers.ts`
+2. **`getByLabel()`** — for form fields with labels
+3. **`getByRole()`** — for semantic roles
+4. **`getByText()`** — for static text
+5. **CSS selector** — last resort only
+
+Never introduce XPath or class-based selectors (`.btn-primary`, `.red-input`) when healing tests.
+If the element is missing a `data-testid`, add it to the HTML source and update the locator accordingly.
+Reference `specs/01-accessibility-testing-standards.md` for naming conventions.

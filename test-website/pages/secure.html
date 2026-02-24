@@ -9,16 +9,35 @@
 <body>
     <div class="page-container">
         <h1>🎉 登入成功！</h1>
-        <div class="message success show">
-            <p>歡迎來到安全區域！您已成功登入系統。</p>
+        <div class="message success show" data-testid="auth-secure-success-msg">
+            <p id="welcome-msg" data-testid="auth-secure-welcome-text">歡迎來到安全區域！您已成功登入系統。</p>
         </div>
-        
-        <button id="logoutBtn">登出</button>
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+
+        <div id="user-info" data-testid="auth-secure-user-info"
+             style="margin:15px 0; padding:10px; background:#f5f5f5; border-radius:6px; display:none;">
+            <p>👤 使用者：<strong id="display-username" data-testid="auth-secure-display-username"></strong></p>
+            <p>🏷️ 角色：<strong id="display-role" data-testid="auth-secure-display-role"></strong></p>
+        </div>
+
+        <button id="logoutBtn" data-testid="auth-secure-logout-btn" aria-label="登出">登出</button>
+        <a href="../index.html" class="back-link" data-testid="auth-secure-back-link">← 返回首頁</a>
     </div>
 
     <script>
+        // 顯示使用者資訊（若有）
+        const username = localStorage.getItem('currentUser');
+        const role = localStorage.getItem('currentRole');
+        const displayName = localStorage.getItem('displayName');
+        if (username) {
+            document.getElementById('welcome-msg').textContent =
+                `歡迎，${displayName || username}！您已成功登入系統。`;
+            document.getElementById('display-username').textContent = username;
+            document.getElementById('display-role').textContent = role || '一般使用者';
+            document.getElementById('user-info').style.display = 'block';
+        }
+
         document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.clear();
             alert('已登出');
             window.location.href = 'form-auth.html';
         });

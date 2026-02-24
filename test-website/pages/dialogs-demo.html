@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 17: Dialog 處理示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .dialog-btn { padding: 10px 20px; margin: 8px 5px; border-radius: 6px; border: none;
+                      cursor: pointer; font-size: 0.95rem; color: white; }
+        .alert-btn { background: #e53935; }
+        .confirm-btn { background: #1e88e5; }
+        .prompt-btn { background: #43a047; }
+        .beforeunload-btn { background: #fb8c00; }
+        .result-box { background: #f5f5f5; border-left: 4px solid #667eea;
+                      padding: 12px 15px; border-radius: 0 6px 6px 0; margin: 10px 0; min-height: 40px; }
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>💬 Day 17: Dialog 處理示範</h1>
+        <p>練習 <code>page.on('dialog')</code>、<code>dialog.accept()</code>、<code>dialog.dismiss()</code></p>
+
+        <!-- alert -->
+        <section class="demo-section">
+            <h2>alert — 一般提示</h2>
+            <button class="dialog-btn alert-btn" id="alert-btn">觸發 Alert</button>
+            <div class="result-box" id="alert-result">尚未觸發</div>
+        </section>
+
+        <!-- confirm: accept -->
+        <section class="demo-section">
+            <h2>confirm — 確認對話框</h2>
+            <button class="dialog-btn confirm-btn" id="confirm-delete-btn">刪除帳戶（confirm）</button>
+            <button class="dialog-btn confirm-btn" id="confirm-save-btn" style="background:#0277bd;">儲存變更（confirm）</button>
+            <div class="result-box" id="confirm-result">尚未觸發</div>
+        </section>
+
+        <!-- prompt -->
+        <section class="demo-section">
+            <h2>prompt — 輸入對話框</h2>
+            <button class="dialog-btn prompt-btn" id="prompt-name-btn">輸入姓名（prompt）</button>
+            <button class="dialog-btn prompt-btn" id="prompt-age-btn" style="background:#2e7d32;">輸入年齡（prompt，預設值 25）</button>
+            <div class="result-box" id="prompt-result">尚未觸發</div>
+        </section>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        document.getElementById('alert-btn').addEventListener('click', function() {
+            alert('⚠️ 這是一個 Alert 對話框！\n請點擊「確定」關閉。');
+            document.getElementById('alert-result').textContent = '✅ Alert 已被接受（accept）';
+        });
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+            const result = confirm('確定要刪除帳戶嗎？\n此操作無法復原！');
+            document.getElementById('confirm-result').textContent =
+                result ? '✅ 確認刪除（用戶點擊了「確定」）' : '❌ 取消刪除（用戶點擊了「取消」）';
+        });
+
+        document.getElementById('confirm-save-btn').addEventListener('click', function() {
+            const result = confirm('確定要儲存所有變更嗎？');
+            document.getElementById('confirm-result').textContent =
+                result ? '✅ 確認儲存（用戶點擊了「確定」）' : '❌ 取消儲存（用戶點擊了「取消」）';
+        });
+
+        document.getElementById('prompt-name-btn').addEventListener('click', function() {
+            const name = prompt('請輸入您的姓名：');
+            if (name === null) {
+                document.getElementById('prompt-result').textContent = '❌ 用戶取消了輸入';
+            } else if (name.trim() === '') {
+                document.getElementById('prompt-result').textContent = '⚠️ 用戶未輸入任何內容';
+            } else {
+                document.getElementById('prompt-result').textContent = `✅ 您輸入的姓名是：${name}`;
+            }
+        });
+
+        document.getElementById('prompt-age-btn').addEventListener('click', function() {
+            const age = prompt('請輸入您的年齡：', '25');
+            if (age === null) {
+                document.getElementById('prompt-result').textContent = '❌ 用戶取消了輸入';
+            } else {
+                document.getElementById('prompt-result').textContent = `✅ 您輸入的年齡是：${age}`;
+            }
+        });
+    </script>
+</body>
+</html>

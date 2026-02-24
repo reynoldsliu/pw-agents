@@ -1,79 +1,55 @@
+/**
+ * Playwright 測試設定檔
+ *
+ * 說明：
+ * - testDir     測試檔案目錄
+ * - fullyParallel 所有 spec 檔案之間完全並行執行
+ * - forbidOnly  CI 環境下禁止 test.only（避免意外留在 CI）
+ * - retries     CI 環境失敗自動重試 2 次；本地開發不重試
+ * - workers     CI 環境限制為單一 worker 避免資源競爭
+ * - reporter    測試報告輸出格式（html → playwright-report/）
+ * - baseURL     測試網站基底 URL（使用 `page.goto('/')` 即可）
+ * - trace       失敗重試時收集執行軌跡（可用 npx playwright show-trace 查看）
+ *
+ * 詳細文件：https://playwright.dev/docs/test-configuration
+ */
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+  /* 所有 spec 檔案之間完全並行執行，加速整體測試時間 */
+  fullyParallel: true,
+
+  /* CI 環境下若有 test.only 殘留則視為建置失敗 */
+  forbidOnly: !!process.env.CI,
+
+  /* CI 失敗自動重試 2 次；本地開發不重試 */
+  retries: process.env.CI ? 2 : 0,
+
+  /* CI 環境限制單一 worker 避免資源競爭；本地則自動決定 */
+  workers: process.env.CI ? 1 : undefined,
+
+  /* 輸出 HTML 報告至 playwright-report/ 目錄 */
+  reporter: 'html',
+
+  use: {
+    /* 測試網站基底 URL，使用 page.goto('/') 即可導航至首頁 */
+    baseURL: 'http://localhost:8080',
+
+    /* 失敗重試時自動收集 trace，可用 `npx playwright show-trace` 查看 */
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
+  /* 設定執行的瀏覽器 projects */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });

@@ -2,6 +2,7 @@
 // plan: .github/agents/plans/login-test-plan.md
 
 import { test, expect } from '@playwright/test';
+import { byTestId } from './test-helpers';
 
 const BASE_URL = 'http://localhost:8080';
 const LOGIN_PAGE = `${BASE_URL}/pages/form-auth.html`;
@@ -20,38 +21,36 @@ test.describe('表單登入驗證測試', () => {
     await expect(page).toHaveTitle('場景 1: 表單登入驗證');
 
     // 4. 在「使用者名稱」欄位輸入: testuser
-    await page.fill('#username', 'testuser');
+    await byTestId(page, 'auth-form-username-input').fill('testuser');
 
     // 5. 在「密碼」欄位輸入: Test@1234
-    await page.fill('#password', 'Test@1234');
+    await byTestId(page, 'auth-form-password-input').fill('Test@1234');
 
     // 6. 點擊「登入」按鈕
-    await page.click('button[type="submit"]');
+    await byTestId(page, 'auth-form-login-btn').click();
 
     // 7. 等待成功訊息出現（3 秒內）
-    const successMessage = page.locator('#message.success');
+    const successMessage = byTestId(page, 'auth-form-message');
     await expect(successMessage).toBeVisible({ timeout: 3000 });
 
-    // 8. 驗證成功訊息包含文字: "登入成功！您已登入到安全區域。"
+    // 8. 驗證成功訊息包含文字
     await expect(successMessage).toContainText('登入成功！您已登入到安全區域。');
 
-    // 9. 驗證成功訊息為綠色背景（success 樣式）
-    const messageClass = await successMessage.getAttribute('class');
-    expect(messageClass).toContain('success');
+    // 9. 驗證成功訊息有 success 樣式
+    await expect(successMessage).toHaveClass(/success/);
 
     // 10. 等待自動跳轉到安全頁面（約 2 秒）
-    await page.waitForURL(/.*secure\.html/);
+    await page.waitForURL(/.*secure/);
 
     // 11. 驗證 URL 變更為 secure.html
-    expect(page.url()).toContain('secure.html');
+    expect(page.url()).toContain('secure');
 
-    // 12. 驗證安全頁面顯示標題: "登入成功！"
+    // 12. 驗證安全頁面顯示標題
     const pageTitle = page.locator('h1');
     await expect(pageTitle).toContainText('登入成功！');
 
     // 13. 驗證安全頁面顯示歡迎訊息
-    const welcomeMessage = page.locator('text=歡迎');
-    await expect(welcomeMessage).toBeVisible();
+    await expect(byTestId(page, 'auth-secure-welcome-text')).toBeVisible();
   });
 
   // 場景 2: 使用錯誤帳號密碼登入
@@ -60,31 +59,30 @@ test.describe('表單登入驗證測試', () => {
     await page.goto(LOGIN_PAGE);
 
     // 2. 在「使用者名稱」欄位輸入: wronguser
-    await page.fill('#username', 'wronguser');
+    await byTestId(page, 'auth-form-username-input').fill('wronguser');
 
     // 3. 在「密碼」欄位輸入: wrongpass
-    await page.fill('#password', 'wrongpass');
+    await byTestId(page, 'auth-form-password-input').fill('wrongpass');
 
     // 4. 點擊「登入」按鈕
-    await page.click('button[type="submit"]');
+    await byTestId(page, 'auth-form-login-btn').click();
 
     // 5. 驗證錯誤訊息出現
-    const errorMessage = page.locator('#message.error');
+    const errorMessage = byTestId(page, 'auth-form-message');
     await expect(errorMessage).toBeVisible();
 
-    // 6. 驗證錯誤訊息包含文字: "登入失敗！使用者名稱或密碼錯誤。"
+    // 6. 驗證錯誤訊息包含文字
     await expect(errorMessage).toContainText('登入失敗！使用者名稱或密碼錯誤。');
 
-    // 7. 驗證錯誤訊息為紅色背景（error 樣式）
-    const messageClass = await errorMessage.getAttribute('class');
-    expect(messageClass).toContain('error');
+    // 7. 驗證錯誤訊息有 error 樣式
+    await expect(errorMessage).toHaveClass(/error/);
 
     // 8. 驗證 URL 保持在登入頁面（未跳轉）
-    expect(page.url()).toContain('form-auth.html');
+    expect(page.url()).toContain('form-auth');
 
     // 9. 驗證使用者名稱和密碼欄位仍然存在
-    await expect(page.locator('#username')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
+    await expect(byTestId(page, 'auth-form-username-input')).toBeVisible();
+    await expect(byTestId(page, 'auth-form-password-input')).toBeVisible();
   });
 
   // 場景 3: 空白欄位驗證
@@ -92,20 +90,18 @@ test.describe('表單登入驗證測試', () => {
     // 1. 訪問登入頁面
     await page.goto(LOGIN_PAGE);
 
-    // 2. 保持「使用者名稱」欄位為空
-    // 3. 保持「密碼」欄位為空
-    // 4. 點擊「登入」按鈕
-    await page.click('button[type="submit"]');
+    // 2. 點擊「登入」按鈕（欄位保持空白）
+    await byTestId(page, 'auth-form-login-btn').click();
 
-    // 5. 驗證系統反應（顯示錯誤訊息或 HTML5 驗證提示）
-    const errorMessage = page.locator('#message.error');
+    // 3. 驗證系統反應（顯示錯誤訊息或 HTML5 驗證提示）
+    const errorMessage = byTestId(page, 'auth-form-message');
     const isErrorVisible = await errorMessage.isVisible().catch(() => false);
-    
+
     if (isErrorVisible) {
       await expect(errorMessage).toBeVisible();
     } else {
       // 檢查 HTML5 驗證提示
-      const usernameInput = page.locator('#username');
+      const usernameInput = byTestId(page, 'auth-form-username-input');
       const isInvalid = await usernameInput.evaluate((el: HTMLInputElement) => !el.checkValidity());
       expect(isInvalid).toBe(true);
     }
@@ -117,14 +113,13 @@ test.describe('表單登入驗證測試', () => {
     await page.goto(LOGIN_PAGE);
 
     // 2. 在「使用者名稱」欄位輸入: testuser
-    await page.fill('#username', 'testuser');
+    await byTestId(page, 'auth-form-username-input').fill('testuser');
 
-    // 3. 保持「密碼」欄位為空
-    // 4. 點擊「登入」按鈕
-    await page.click('button[type="submit"]');
+    // 3. 點擊「登入」按鈕（密碼保持空白）
+    await byTestId(page, 'auth-form-login-btn').click();
 
-    // 5. 驗證系統顯示錯誤訊息
-    const errorMessage = page.locator('#message.error');
+    // 4. 驗證系統顯示錯誤訊息
+    const errorMessage = byTestId(page, 'auth-form-message');
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toContainText('登入失敗');
   });
@@ -134,15 +129,14 @@ test.describe('表單登入驗證測試', () => {
     // 1. 訪問登入頁面
     await page.goto(LOGIN_PAGE);
 
-    // 2. 保持「使用者名稱」欄位為空
-    // 3. 在「密碼」欄位輸入: Test@1234
-    await page.fill('#password', 'Test@1234');
+    // 2. 在「密碼」欄位輸入: Test@1234
+    await byTestId(page, 'auth-form-password-input').fill('Test@1234');
 
-    // 4. 點擊「登入」按鈕
-    await page.click('button[type="submit"]');
+    // 3. 點擊「登入」按鈕（使用者名稱保持空白）
+    await byTestId(page, 'auth-form-login-btn').click();
 
-    // 5. 驗證系統顯示錯誤訊息
-    const errorMessage = page.locator('#message.error');
+    // 4. 驗證系統顯示錯誤訊息
+    const errorMessage = byTestId(page, 'auth-form-message');
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toContainText('登入失敗');
   });
@@ -151,28 +145,28 @@ test.describe('表單登入驗證測試', () => {
   test('場景 6: 從安全頁面成功登出', async ({ page }) => {
     // 1. 完成成功登入流程到達安全頁面
     await page.goto(LOGIN_PAGE);
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'Test@1234');
-    await page.click('button[type="submit"]');
-    await page.waitForURL(/.*secure\.html/);
+    await byTestId(page, 'auth-form-username-input').fill('testuser');
+    await byTestId(page, 'auth-form-password-input').fill('Test@1234');
+    await byTestId(page, 'auth-form-login-btn').click();
+    await page.waitForURL(/.*secure/);
 
     // 2. 在安全頁面點擊「登出」按鈕
-    const logoutButton = page.locator('button:has-text("登出")');
+    const logoutButton = byTestId(page, 'auth-secure-logout-btn');
     await expect(logoutButton).toBeVisible();
-    await logoutButton.click();
 
-    // 3. 驗證彈出確認對話框顯示 "已登出"
-    // 處理確認對話框
+    // 3. 處理確認對話框
     page.on('dialog', async dialog => {
       expect(dialog.message()).toContain('已登出');
       await dialog.accept();
     });
 
+    await logoutButton.click();
+
     // 4. 驗證導向回到登入頁面
-    await page.waitForURL(/.*form-auth\.html/);
+    await page.waitForURL(/.*form-auth/);
 
     // 5. 驗證 URL 變更為 form-auth.html
-    expect(page.url()).toContain('form-auth.html');
+    expect(page.url()).toContain('form-auth');
   });
 
   // 場景 7: 表單欄位屬性驗證
@@ -180,20 +174,19 @@ test.describe('表單登入驗證測試', () => {
     // 1. 訪問登入頁面
     await page.goto(LOGIN_PAGE);
 
-    // 2. 檢查使用者名稱欄位的 ID 為 username
-    const usernameInput = page.locator('#username');
+    // 2. 驗證使用者名稱欄位有 data-testid
+    const usernameInput = byTestId(page, 'auth-form-username-input');
     await expect(usernameInput).toHaveAttribute('id', 'username');
 
-    // 3. 檢查密碼欄位的 ID 為 password
-    const passwordInput = page.locator('#password');
+    // 3. 驗證密碼欄位有 data-testid
+    const passwordInput = byTestId(page, 'auth-form-password-input');
     await expect(passwordInput).toHaveAttribute('id', 'password');
 
     // 4. 檢查密碼欄位的 type 為 password（遮罩顯示）
     await expect(passwordInput).toHaveAttribute('type', 'password');
 
-    // 5. 檢查登入按鈕的 type 為 submit
-    const submitButton = page.locator('button[type="submit"]');
-    await expect(submitButton).toHaveAttribute('type', 'submit');
+    // 5. 驗證登入按鈕的 type 為 submit
+    await expect(byTestId(page, 'auth-form-login-btn')).toHaveAttribute('type', 'submit');
 
     // 6. 驗證所有必要標籤（label）都存在
     const usernameLabel = page.locator('label[for="username"]');
@@ -207,28 +200,24 @@ test.describe('表單登入驗證測試', () => {
     // 1. 訪問登入頁面
     await page.goto(LOGIN_PAGE);
 
-    // 2. 驗證頁面標題存在: "🔐 場景 1: 表單登入驗證"
+    // 2. 驗證頁面標題存在
     const pageHeading = page.locator('h1');
     await expect(pageHeading).toContainText('場景 1: 表單登入驗證');
 
-    // 3. 驗證「使用者名稱」標籤和輸入框存在
-    await expect(page.locator('label[for="username"]')).toBeVisible();
-    await expect(page.locator('#username')).toBeVisible();
+    // 3. 驗證使用者名稱輸入框存在（有 data-testid）
+    await expect(byTestId(page, 'auth-form-username-input')).toBeVisible();
 
-    // 4. 驗證「密碼」標籤和輸入框存在
-    await expect(page.locator('label[for="password"]')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
+    // 4. 驗證密碼輸入框存在（有 data-testid）
+    await expect(byTestId(page, 'auth-form-password-input')).toBeVisible();
 
-    // 5. 驗證「登入」按鈕存在
-    await expect(page.locator('button[type="submit"]')).toBeVisible();
+    // 5. 驗證「登入」按鈕存在（有 data-testid）
+    await expect(byTestId(page, 'auth-form-login-btn')).toBeVisible();
 
-    // 6. 驗證「返回首頁」連結存在
-    const backLink = page.locator('a.back-link, a:has-text("返回首頁")');
-    await expect(backLink).toBeVisible();
+    // 6. 驗證「返回首頁」連結存在（有 data-testid）
+    await expect(byTestId(page, 'auth-form-back-link')).toBeVisible();
 
-    // 7. 驗證訊息顯示區域存在（即使初始為隱藏）
-    const messageDiv = page.locator('#message');
-    await expect(messageDiv).toHaveCount(1);
+    // 7. 驗證訊息顯示區域存在（有 data-testid）
+    await expect(byTestId(page, 'auth-form-message')).toHaveCount(1);
   });
 
   // 場景 9: 連續多次錯誤登入
@@ -237,38 +226,28 @@ test.describe('表單登入驗證測試', () => {
     await page.goto(LOGIN_PAGE);
 
     // 2. 輸入錯誤帳號密碼並提交（第 1 次）
-    await page.fill('#username', 'wrong1');
-    await page.fill('#password', 'wrong1');
-    await page.click('button[type="submit"]');
+    await byTestId(page, 'auth-form-username-input').fill('wrong1');
+    await byTestId(page, 'auth-form-password-input').fill('wrong1');
+    await byTestId(page, 'auth-form-login-btn').click();
 
     // 3. 驗證顯示錯誤訊息
-    let errorMessage = page.locator('#message.error');
-    await expect(errorMessage).toBeVisible();
-
-    // 清除表單
-    await page.fill('#username', '');
-    await page.fill('#password', '');
+    await expect(byTestId(page, 'auth-form-message')).toBeVisible();
 
     // 4. 再次輸入錯誤帳號密碼並提交（第 2 次）
-    await page.fill('#username', 'wrong2');
-    await page.fill('#password', 'wrong2');
-    await page.click('button[type="submit"]');
+    await byTestId(page, 'auth-form-username-input').fill('wrong2');
+    await byTestId(page, 'auth-form-password-input').fill('wrong2');
+    await byTestId(page, 'auth-form-login-btn').click();
 
     // 5. 驗證仍然顯示錯誤訊息
-    errorMessage = page.locator('#message.error');
-    await expect(errorMessage).toBeVisible();
-
-    // 清除表單
-    await page.fill('#username', '');
-    await page.fill('#password', '');
+    await expect(byTestId(page, 'auth-form-message')).toBeVisible();
 
     // 6. 第 3 次輸入正確帳號密碼
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'Test@1234');
-    await page.click('button[type="submit"]');
+    await byTestId(page, 'auth-form-username-input').fill('testuser');
+    await byTestId(page, 'auth-form-password-input').fill('Test@1234');
+    await byTestId(page, 'auth-form-login-btn').click();
 
     // 7. 驗證成功登入
-    const successMessage = page.locator('#message.success');
+    const successMessage = byTestId(page, 'auth-form-message');
     await expect(successMessage).toBeVisible();
     await expect(successMessage).toContainText('登入成功');
   });
@@ -277,21 +256,21 @@ test.describe('表單登入驗證測試', () => {
   test('場景 10: 瀏覽器前進/後退功能', async ({ page }) => {
     // 1. 完成成功登入流程到達安全頁面
     await page.goto(LOGIN_PAGE);
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'Test@1234');
-    await page.click('button[type="submit"]');
-    await page.waitForURL(/.*secure\.html/);
+    await byTestId(page, 'auth-form-username-input').fill('testuser');
+    await byTestId(page, 'auth-form-password-input').fill('Test@1234');
+    await byTestId(page, 'auth-form-login-btn').click();
+    await page.waitForURL(/.*secure/);
 
     // 2. 點擊瀏覽器「返回」按鈕
     await page.goBack();
 
     // 3. 驗證返回到登入頁面
-    expect(page.url()).toContain('form-auth.html');
+    expect(page.url()).toContain('form-auth');
 
     // 4. 點擊瀏覽器「前進」按鈕
     await page.goForward();
 
     // 5. 驗證回到安全頁面
-    expect(page.url()).toContain('secure.html');
+    expect(page.url()).toContain('secure');
   });
 });

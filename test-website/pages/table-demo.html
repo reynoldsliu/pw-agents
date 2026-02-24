@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 14: 表格定位示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 12px; text-align: left; }
+        td { padding: 10px 12px; border-bottom: 1px solid #eee; }
+        tr:hover td { background: #f5f7ff; }
+        .role-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .role-admin { background: #e8eaf6; color: #3949ab; }
+        .role-editor { background: #e8f5e9; color: #2e7d32; }
+        .role-viewer { background: #fff3e0; color: #e65100; }
+        .action-btn { padding: 4px 10px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.85rem; }
+        .edit-btn { background: #e3f2fd; color: #1565c0; }
+        .delete-btn { background: #fce4ec; color: #c62828; margin-left: 5px; }
+        #status-bar { margin: 10px 0; padding: 8px 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>📊 Day 14: 表格定位示範</h1>
+        <p>練習 <code>nth()</code>、<code>first()</code>、<code>last()</code>、<code>all()</code>、<code>filter()</code></p>
+
+        <div id="status-bar" class="message" style="display:none;"></div>
+
+        <table id="user-table">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>電子郵件</th>
+                    <th>角色</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr data-user-id="1">
+                    <td class="user-name">王小明</td>
+                    <td class="user-email">ming@example.com</td>
+                    <td><span class="role-badge role-admin">管理員</span></td>
+                    <td><span class="user-status active-status">啟用</span></td>
+                    <td>
+                        <button class="action-btn edit-btn">編輯</button>
+                        <button class="action-btn delete-btn">刪除</button>
+                    </td>
+                </tr>
+                <tr data-user-id="2">
+                    <td class="user-name">陳小花</td>
+                    <td class="user-email">hua@example.com</td>
+                    <td><span class="role-badge role-editor">編輯者</span></td>
+                    <td><span class="user-status active-status">啟用</span></td>
+                    <td>
+                        <button class="action-btn edit-btn">編輯</button>
+                        <button class="action-btn delete-btn">刪除</button>
+                    </td>
+                </tr>
+                <tr data-user-id="3">
+                    <td class="user-name">李阿德</td>
+                    <td class="user-email">de@example.com</td>
+                    <td><span class="role-badge role-viewer">檢視者</span></td>
+                    <td><span class="user-status inactive-status">停用</span></td>
+                    <td>
+                        <button class="action-btn edit-btn">編輯</button>
+                        <button class="action-btn delete-btn">刪除</button>
+                    </td>
+                </tr>
+                <tr data-user-id="4">
+                    <td class="user-name">林美麗</td>
+                    <td class="user-email">mei@example.com</td>
+                    <td><span class="role-badge role-editor">編輯者</span></td>
+                    <td><span class="user-status active-status">啟用</span></td>
+                    <td>
+                        <button class="action-btn edit-btn">編輯</button>
+                        <button class="action-btn delete-btn">刪除</button>
+                    </td>
+                </tr>
+                <tr data-user-id="5">
+                    <td class="user-name">張大偉</td>
+                    <td class="user-email">wei@example.com</td>
+                    <td><span class="role-badge role-admin">管理員</span></td>
+                    <td><span class="user-status active-status">啟用</span></td>
+                    <td>
+                        <button class="action-btn edit-btn">編輯</button>
+                        <button class="action-btn delete-btn">刪除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="table-summary">
+            共 <span id="total-count">5</span> 位使用者，
+            啟用 <span id="active-count">4</span> 位，
+            停用 <span id="inactive-count">1</span> 位
+        </div>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        const statusBar = document.getElementById('status-bar');
+        function showStatus(msg, type = 'success') {
+            statusBar.textContent = msg;
+            statusBar.className = `message ${type} show`;
+            statusBar.style.display = '';
+        }
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const name = row.querySelector('.user-name').textContent;
+                showStatus(`✏️ 編輯使用者：${name}`);
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const name = row.querySelector('.user-name').textContent;
+                if (confirm(`確定要刪除 ${name}？`)) {
+                    row.remove();
+                    updateCounts();
+                    showStatus(`🗑️ 已刪除使用者：${name}`);
+                }
+            });
+        });
+
+        function updateCounts() {
+            const rows = document.querySelectorAll('#table-body tr');
+            const active = document.querySelectorAll('.active-status').length;
+            document.getElementById('total-count').textContent = rows.length;
+            document.getElementById('active-count').textContent = active;
+            document.getElementById('inactive-count').textContent = rows.length - active;
+        }
+    </script>
+</body>
+</html>

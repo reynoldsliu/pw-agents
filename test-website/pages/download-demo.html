@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 16: 檔案上傳下載示範</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .upload-zone { border: 2px dashed #667eea; border-radius: 8px; padding: 30px;
+                       text-align: center; cursor: pointer; margin: 10px 0; }
+        .upload-zone:hover { background: #e8eaf6; }
+        .download-item { display: flex; align-items: center; justify-content: space-between;
+                         padding: 12px; border: 1px solid #e0e0e0; border-radius: 6px; margin: 8px 0; }
+        .download-btn { padding: 6px 14px; background: #667eea; color: white; border: none;
+                        border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .demo-section { border-top: 1px solid #eee; padding: 12px 0; margin: 8px 0; }
+        .demo-section h2 { color: #764ba2; font-size: 0.95rem; margin-bottom: 8px; }
+        .file-chooser-btn { padding: 10px 20px; background: #43a047; color: white; border: none;
+                            border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>📂 Day 16: 檔案上傳下載示範</h1>
+        <p>練習 <code>setInputFiles()</code>、<code>waitForEvent('filechooser')</code>、<code>waitForEvent('download')</code></p>
+
+        <!-- 直接 input[type=file] 上傳 (setInputFiles) -->
+        <section class="demo-section">
+            <h2>setInputFiles() — 直接上傳</h2>
+            <div class="form-group">
+                <label for="direct-upload">選擇檔案（直接 input）</label>
+                <input type="file" id="direct-upload" accept=".txt,.pdf,.png,.jpg" data-testid="download-direct-file-input">
+            </div>
+            <div id="direct-upload-result" class="message" style="margin-top:8px;" data-testid="download-direct-result"></div>
+        </section>
+
+        <!-- 點擊觸發 filechooser -->
+        <section class="demo-section">
+            <h2>waitForEvent('filechooser') — 點擊觸發選擇器</h2>
+            <div class="upload-zone" id="file-chooser-zone">
+                <p>📤 點擊此區域選擇檔案</p>
+                <p style="color:#888; font-size:0.85rem;">支援 .txt, .pdf, .png, .jpg</p>
+                <input type="file" id="hidden-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg">
+            </div>
+            <button class="file-chooser-btn" id="open-chooser-btn">選擇檔案（按鈕觸發）</button>
+            <input type="file" id="btn-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg">
+            <div id="chooser-result" class="message" style="margin-top:8px;"></div>
+        </section>
+
+        <!-- 下載示範 -->
+        <section class="demo-section">
+            <h2>waitForEvent('download') — 檔案下載</h2>
+            <div class="download-item">
+                <span>📄 sample.txt — 測試用文字檔案</span>
+                <a id="download-txt" href="#" download="sample.txt" class="download-btn">下載</a>
+            </div>
+            <div class="download-item">
+                <span>📊 report.csv — 測試用 CSV 報表</span>
+                <a id="download-csv" href="#" download="report.csv" class="download-btn">下載</a>
+            </div>
+            <div class="download-item">
+                <span>🗂️ data.json — 測試用 JSON 資料</span>
+                <button class="download-btn" id="download-json-btn">下載</button>
+            </div>
+            <div id="download-result" class="message" style="margin-top:8px;"></div>
+        </section>
+
+        <a href="../index.html" class="back-link">← 返回首頁</a>
+    </div>
+
+    <script>
+        // 直接上傳
+        document.getElementById('direct-upload').addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const f = this.files[0];
+                const el = document.getElementById('direct-upload-result');
+                el.textContent = `✅ 已選擇：${f.name}（${(f.size / 1024).toFixed(1)} KB）`;
+                el.className = 'message success show';
+            }
+        });
+
+        // filechooser zone
+        document.getElementById('file-chooser-zone').addEventListener('click', () => {
+            document.getElementById('hidden-file-input').click();
+        });
+        document.getElementById('hidden-file-input').addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const el = document.getElementById('chooser-result');
+                el.textContent = `✅ 已選擇：${this.files[0].name}`;
+                el.className = 'message success show';
+            }
+        });
+
+        // button filechooser
+        document.getElementById('open-chooser-btn').addEventListener('click', () => {
+            document.getElementById('btn-file-input').click();
+        });
+        document.getElementById('btn-file-input').addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const el = document.getElementById('chooser-result');
+                el.textContent = `✅ 按鈕選擇：${this.files[0].name}`;
+                el.className = 'message success show';
+            }
+        });
+
+        // 下載 - 動態產生 Blob
+        function createBlob(content, type) {
+            return URL.createObjectURL(new Blob([content], { type }));
+        }
+
+        document.getElementById('download-txt').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.href = createBlob('Playwright 測試用文字檔案\n第二行內容\n第三行內容\n測試完成！', 'text/plain');
+            const a = document.createElement('a');
+            a.href = this.href;
+            a.download = 'sample.txt';
+            a.click();
+            const el = document.getElementById('download-result');
+            el.textContent = '✅ sample.txt 下載已觸發';
+            el.className = 'message success show';
+        });
+
+        document.getElementById('download-csv').addEventListener('click', function(e) {
+            e.preventDefault();
+            const csv = '姓名,電子郵件,角色\n王小明,ming@example.com,管理員\n陳小花,hua@example.com,編輯者';
+            this.href = createBlob(csv, 'text/csv');
+            const a = document.createElement('a');
+            a.href = this.href;
+            a.download = 'report.csv';
+            a.click();
+            const el = document.getElementById('download-result');
+            el.textContent = '✅ report.csv 下載已觸發';
+            el.className = 'message success show';
+        });
+
+        document.getElementById('download-json-btn').addEventListener('click', function() {
+            const data = JSON.stringify({ version: '1.0', items: ['item1', 'item2', 'item3'], generated: new Date().toISOString() }, null, 2);
+            const a = document.createElement('a');
+            a.href = createBlob(data, 'application/json');
+            a.download = 'data.json';
+            a.click();
+            const el = document.getElementById('download-result');
+            el.textContent = '✅ data.json 下載已觸發';
+            el.className = 'message success show';
+        });
+    </script>
+</body>
+</html>
