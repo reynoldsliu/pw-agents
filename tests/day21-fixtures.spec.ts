@@ -155,4 +155,59 @@ test.describe('Day 21：製作你的魔法道具箱 — Fixtures', () => {
     await context.close();
   });
 
+  // --- Fixture 進階：teardown 與 scope ---
+
+  test('fixture teardown — use() 後的程式碼在測試結束後執行', async ({ page }) => {
+    // 示範 fixture 的 teardown 機制（setup → use → teardown）
+    // 實際 teardown 在 test.extend 的 homePage fixture 中可加：
+    //   await use(page);
+    //   await page.evaluate(() => localStorage.clear()); // ← teardown
+    //
+    // 此處用 test 內建的 addTeardownCallback 示範等效行為
+
+    const cleanupSteps: string[] = [];
+
+    // 模擬 fixture setup
+    cleanupSteps.push('setup');
+    await page.goto(BASE_URL);
+
+    // 在測試結束時執行清理（等同 fixture teardown）
+    page.on('close', () => cleanupSteps.push('teardown'));
+
+    await expect(page).toHaveTitle('Playwright 玩家攻略 — 測試網站');
+    cleanupSteps.push('test-body');
+
+    // 驗證執行順序正確
+    expect(cleanupSteps).toEqual(['setup', 'test-body']);
+  });
+
+  test('fixture scope 說明 — test scope vs worker scope', async ({}, testInfo) => {
+    // test scope（預設）：每個測試都重新建立 fixture 實例
+    // worker scope：同一 worker 中所有測試共享同一個 fixture 實例
+    //
+    // 宣告方式：
+    //   myFixture: [async ({}, use) => { await use(value); }, { scope: 'worker' }]
+    //
+    // 適用情境：
+    //   - test scope：page, context（每測試隔離，預設）
+    //   - worker scope：重量級資源（資料庫連線、建立好的 storageState）
+
+    test.info().annotations.push({
+      type: 'fixture scope',
+      description: [
+        '• test scope（預設）：每個測試獨立建立/銷毀，保證隔離',
+        '• worker scope：同 worker 所有測試共享一個實例，提升效能',
+        `• 目前 workerIndex: ${testInfo.workerIndex}`,
+      ].join('\n'),
+    });
+
+    // worker scope fixture 適合：每次 login 很慢時先登入一次存成 storageState
+    expect(testInfo.workerIndex).toBeGreaterThanOrEqual(0);
+  });
+
+  test('💥 [錯誤示範] loggedInPage fixture 已登入，但斷言在登入頁', async ({ loggedInPage }) => {
+    // 錯誤：loggedInPage fixture 已完成登入並在 secure 頁面，但斷言 URL 含 form-auth
+    await expect(loggedInPage).toHaveURL(/form-auth/);
+  });
+
 });

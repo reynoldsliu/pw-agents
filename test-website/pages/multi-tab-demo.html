@@ -27,10 +27,10 @@
         <!-- target="_blank" 連結 -->
         <section class="demo-section">
             <h2>target="_blank" — 在新分頁開啟連結</h2>
-            <a href="form-auth.html" target="_blank" class="external-link" id="new-tab-link">
+            <a href="form-auth.html" target="_blank" class="external-link" id="new-tab-link" data-testid="tab-new-tab-link">
                 🔗 在新分頁開啟登入頁面（target="_blank"）
             </a>
-            <a href="locators-demo.html" target="_blank" class="external-link" id="locator-tab-link">
+            <a href="locators-demo.html" target="_blank" class="external-link" id="locator-tab-link" data-testid="tab-locator-tab-link">
                 🔗 在新分頁開啟定位示範頁面
             </a>
         </section>
@@ -38,10 +38,10 @@
         <!-- window.open() popup -->
         <section class="demo-section">
             <h2>window.open() — 觸發 popup 視窗</h2>
-            <button class="tab-btn" id="open-popup-btn">
+            <button class="tab-btn" id="open-popup-btn" data-testid="tab-open-popup-btn">
                 🪟 開啟 Popup 視窗（assertions-demo）
             </button>
-            <button class="tab-btn" id="open-table-btn" style="background: linear-gradient(135deg, #43a047, #1b5e20);">
+            <button class="tab-btn" id="open-table-btn" style="background: linear-gradient(135deg, #43a047, #1b5e20);" data-testid="tab-open-table-btn">
                 🪟 開啟 Popup 視窗（table-demo）
             </button>
         </section>
@@ -49,11 +49,11 @@
         <!-- 頁面間通訊 -->
         <section class="demo-section">
             <h2>頁面資訊</h2>
-            <p>目前頁面標題：<strong id="page-title">Day 19: 多分頁處理示範</strong></p>
-            <p>目前頁面 URL：<code id="page-url"></code></p>
+            <p>目前頁面標題：<strong id="page-title" data-testid="tab-page-title">Day 19: 多分頁處理示範</strong></p>
+            <p>目前頁面 URL：<code id="page-url" data-testid="tab-page-url"></code></p>
         </section>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="tab-back-link">← 返回首頁</a>
     </div>
 
     <script>

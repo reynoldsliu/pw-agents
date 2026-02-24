@@ -273,4 +273,13 @@ test.describe('表單登入驗證測試', () => {
     // 5. 驗證回到安全頁面
     expect(page.url()).toContain('secure');
   });
+
+  test('💥 [錯誤示範] 密碼錯誤後仍斷言登入成功訊息', async ({ page }) => {
+    await page.goto(LOGIN_PAGE);
+    await page.locator('#username').fill('testuser');
+    await page.locator('#password').fill('WrongPassword!');
+    await page.locator('button[type="submit"]').click();
+    // 錯誤：密碼錯誤，應顯示錯誤訊息，但斷言登入成功
+    await expect(page.locator('#message')).toContainText('登入成功');
+  });
 });

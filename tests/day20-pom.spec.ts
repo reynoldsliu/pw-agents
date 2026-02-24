@@ -5,6 +5,38 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
 const BASE_URL = 'http://localhost:8080';
 
 // =====================================================
+// HomePage — 首頁的 Page Object Model
+// =====================================================
+
+/**
+ * 首頁的 Page Object Model
+ *
+ * 示範多個 POM 協同運作：HomePage → LoginPage → SecurePage
+ * 各自封裝自己的定位器與操作，彼此透過 page 物件串聯
+ */
+class HomePage {
+  readonly page: Page;
+  readonly heading: Locator;
+  readonly loginLink: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.heading = page.locator('header h1');
+    this.loginLink = page.locator('nav a[href="pages/form-auth.html"]');
+  }
+
+  async goto() {
+    await this.page.goto(BASE_URL);
+  }
+
+  /** 點擊導覽列的「登入」連結，導向登入頁 */
+  async navigateToLogin() {
+    await this.loginLink.click();
+    await this.page.waitForURL(/form-auth/);
+  }
+}
+
+// =====================================================
 // LoginPage — 登入頁面的 Page Object Model
 // =====================================================
 
@@ -207,5 +239,39 @@ test.describe('Day 20：撰寫你自己的魔導書 — Page Object Models', () 
     await loginPage.submit();
     await loginPage.waitForSecurePage();
     await expect(page).toHaveURL(/.*secure.*/);
+  });
+
+  // 測試 6：多 POM 協同 — HomePage → LoginPage → SecurePage
+  test('多 POM 協同 — 從首頁導航到安全頁面完整流程', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const loginPage = new LoginPage(page);
+    const securePage = new SecurePage(page);
+
+    // 1. 首頁 POM：導航並驗證
+    await homePage.goto();
+    await expect(homePage.heading).toContainText('Playwright 玩家攻略');
+
+    // 2. 透過首頁導覽到登入頁
+    await homePage.navigateToLogin();
+
+    // 3. 登入頁 POM：執行登入
+    await loginPage.login('admin', 'Admin@1234');
+    await loginPage.waitForSecurePage();
+
+    // 4. 安全頁 POM：驗證狀態並登出
+    await securePage.verifyOnSecurePage();
+    await expect(securePage.getWelcomeMessage()).toContainText('登入成功');
+    await securePage.logout();
+
+    // 驗證回到登入頁
+    await expect(page).toHaveURL(/form-auth/);
+  });
+
+  test('💥 [錯誤示範] POM — 錯誤密碼後斷言跳轉到安全頁面', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('testuser', 'WrongPassword!');
+    // 錯誤：密碼錯誤不會跳轉，但斷言已到達 secure 頁面
+    await expect(page).toHaveURL(/secure/, { timeout: 3000 });
   });
 });

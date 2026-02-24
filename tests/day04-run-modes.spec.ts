@@ -127,4 +127,63 @@ test.describe('Day 04：四種測試執行模式', () => {
 
   });
 
+  test.describe('執行控制 — test.skip / test.fixme / test.only 說明', () => {
+
+    test('test.skip() — 條件性跳過（依瀏覽器）', async ({ page, browserName }) => {
+      // test.skip(condition, reason) — condition 為 true 時跳過
+      // 常見用法：已知某瀏覽器有特定問題時暫時跳過
+      test.skip(browserName === 'firefox', '示範：Firefox 時跳過此測試');
+
+      // 非 Firefox 才會執行到這裡
+      await page.goto(BASE_URL);
+      await expect(page).toHaveTitle('Playwright 玩家攻略 — 測試網站');
+      console.log(`[${browserName}] 非 Firefox，正常執行`);
+    });
+
+    test.skip('test.skip() — 靜態跳過整個測試', async ({ page }) => {
+      // test.skip() 無參數 = 永遠跳過，但保留程式碼供參考
+      // 適合暫時停用的測試
+      await page.goto(BASE_URL);
+      await expect(page.locator('header')).toBeVisible();
+    });
+
+    test('test.fixme() — 標記待修復的已知問題', async ({ page }) => {
+      // test.fixme(condition, reason) — 語意同 skip，但明確表示「待修復」
+      // 建議搭配 issue tracking 連結
+      test.fixme(true, '已知問題 #123：功能尚未實作，待修復後移除此標記');
+
+      // fixme 後以下程式碼不會執行
+      await page.goto(BASE_URL);
+      await expect(page.locator('#not-yet-implemented')).toBeVisible();
+    });
+
+    test('test.only / describe.only 使用說明（不實際呼叫）', async ({ page }, testInfo) => {
+      // ⚠️ 在此示範說明，不實際使用 test.only / describe.only
+      // 因為 playwright.config.ts 設定 forbidOnly: !!process.env.CI
+      // CI 環境下有 .only 殘留會讓整個 build 失敗
+      test.info().annotations.push({
+        type: 'test.only 說明',
+        description: [
+          '• test.only()：只執行此測試（同 spec 中其他測試被跳過）',
+          '• test.describe.only()：只執行此 describe 區塊的測試',
+          '• CLI 替代方案（推薦，不改程式碼）：',
+          '  npx playwright test --grep "標題關鍵字"',
+          '  npx playwright test day04-run-modes.spec.ts',
+          `• forbidOnly 目前設定：${!!process.env.CI}（CI 環境禁止 .only）`,
+        ].join('\n'),
+      });
+
+      await page.goto(BASE_URL);
+      await expect(page.locator('header')).toBeVisible();
+      console.log(`workerIndex: ${testInfo.workerIndex}，project: ${testInfo.project.name}`);
+    });
+
+  });
+
+  test('💥 [錯誤示範] 元素文字斷言錯誤 — h1 實際文字不是「管理後台」', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    // 錯誤：h1 實際文字是「場景 1: 表單登入驗證」，不是「管理後台」
+    await expect(page.locator('h1')).toHaveText('管理後台', { timeout: 3000 });
+  });
+
 });

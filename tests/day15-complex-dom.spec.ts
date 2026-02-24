@@ -143,4 +143,11 @@ test.describe('Day 15：複雜 DOM 的迷霧 — CSS Selector、XPath 與 Chaini
     await expect(page.locator('#result')).toContainText('#A002');
   });
 
+  test('💥 [錯誤示範] XPath 條件錯誤 — 找不到任何元素', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    // 錯誤：class 名稱「produktkarte」不存在，XPath 找不到元素
+    const el = page.locator('xpath=//div[@class="produktkarte"]');
+    await expect(el.first()).toBeVisible({ timeout: 3000 });
+  });
+
 });

@@ -140,4 +140,11 @@ test.describe('Day 23：鑑定師的眼睛 — 截圖與視覺比對', () => {
     expect(screenshot.length).toBeGreaterThan(0);
   });
 
+  test('💥 [錯誤示範] 修改頁面狀態後斷言元素數量仍為舊值', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/assertions-demo.html`);
+    await page.locator('#add-item-btn').click(); // 新增第 4 個項目
+    // 錯誤：點擊後有 4 個項目，但仍斷言 3 個（Playwright 會截圖顯示實際狀態）
+    await expect(page.locator('.list-item')).toHaveCount(3);
+  });
+
 });

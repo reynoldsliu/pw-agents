@@ -23,63 +23,63 @@
         <!-- toBeVisible / toBeHidden -->
         <section class="demo-section">
             <h2>toBeVisible / toBeHidden</h2>
-            <div id="visible-item" style="padding:8px; background:#e8f5e9; border-radius:4px;">👁️ 我是可見元素</div>
-            <div id="hidden-item" style="display:none;">🙈 我是隱藏元素</div>
-            <button id="toggle-visibility-btn" style="margin-top:8px;">切換可見性</button>
+            <div id="visible-item" style="padding:8px; background:#e8f5e9; border-radius:4px;" data-testid="assert-visible-item">👁️ 我是可見元素</div>
+            <div id="hidden-item" style="display:none;" data-testid="assert-hidden-item">🙈 我是隱藏元素</div>
+            <button id="toggle-visibility-btn" style="margin-top:8px;" data-testid="assert-toggle-visibility-btn">切換可見性</button>
         </section>
 
         <!-- toBeEnabled / toBeDisabled -->
         <section class="demo-section">
             <h2>toBeEnabled / toBeDisabled</h2>
-            <button id="enabled-btn">啟用按鈕</button>
-            <button id="disabled-btn" disabled>停用按鈕</button>
-            <button id="toggle-disabled-btn" style="margin-left:10px;">切換啟用狀態</button>
+            <button id="enabled-btn" data-testid="assert-enabled-btn">啟用按鈕</button>
+            <button id="disabled-btn" disabled data-testid="assert-disabled-btn">停用按鈕</button>
+            <button id="toggle-disabled-btn" style="margin-left:10px;" data-testid="assert-toggle-disabled-btn">切換啟用狀態</button>
         </section>
 
         <!-- toBeChecked -->
         <section class="demo-section">
             <h2>toBeChecked</h2>
-            <label><input type="checkbox" id="checked-box" checked> 預設已勾選</label>
-            <label style="margin-left:15px;"><input type="checkbox" id="unchecked-box"> 預設未勾選</label>
+            <label><input type="checkbox" id="checked-box" checked data-testid="assert-checked-checkbox"> 預設已勾選</label>
+            <label style="margin-left:15px;"><input type="checkbox" id="unchecked-box" data-testid="assert-unchecked-checkbox"> 預設未勾選</label>
         </section>
 
         <!-- toHaveText / toContainText -->
         <section class="demo-section">
             <h2>toHaveText / toContainText</h2>
-            <div id="exact-text">Playwright 測試框架</div>
-            <div id="partial-text">本系統採用 <strong>Playwright</strong> 作為自動化測試工具</div>
+            <div id="exact-text" data-testid="assert-exact-text">Playwright 測試框架</div>
+            <div id="partial-text" data-testid="assert-partial-text">本系統採用 <strong>Playwright</strong> 作為自動化測試工具</div>
         </section>
 
         <!-- toHaveValue -->
         <section class="demo-section">
             <h2>toHaveValue</h2>
-            <input type="text" id="value-input" value="預設文字內容">
-            <input type="number" id="number-input" value="42">
+            <input type="text" id="value-input" value="預設文字內容" data-testid="assert-value-input">
+            <input type="number" id="number-input" value="42" data-testid="assert-number-input">
         </section>
 
         <!-- toHaveAttribute -->
         <section class="demo-section">
             <h2>toHaveAttribute</h2>
-            <a id="link-with-href" href="https://playwright.dev" target="_blank">Playwright 官網</a>
-            <img id="img-with-alt" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="示範圖片" width="1" height="1">
+            <a id="link-with-href" href="https://playwright.dev" target="_blank" data-testid="assert-href-link">Playwright 官網</a>
+            <img id="img-with-alt" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="示範圖片" width="1" height="1" data-testid="assert-alt-img">
         </section>
 
         <!-- toHaveClass -->
         <section class="demo-section">
             <h2>toHaveClass</h2>
-            <div id="class-item" class="badge active">狀態正常</div>
-            <div id="warning-item" class="badge warning" style="margin-left:10px;">注意事項</div>
+            <div id="class-item" class="badge active" data-testid="assert-active-badge">狀態正常</div>
+            <div id="warning-item" class="badge warning" style="margin-left:10px;" data-testid="assert-warning-badge">注意事項</div>
         </section>
 
         <!-- toHaveCount -->
         <section class="demo-section">
             <h2>toHaveCount</h2>
-            <ul class="item-list" id="item-list">
-                <li class="list-item">項目一</li>
-                <li class="list-item">項目二</li>
-                <li class="list-item">項目三</li>
+            <ul class="item-list" id="item-list" data-testid="assert-item-list">
+                <li class="list-item" data-testid="assert-list-item-1">項目一</li>
+                <li class="list-item" data-testid="assert-list-item-2">項目二</li>
+                <li class="list-item" data-testid="assert-list-item-3">項目三</li>
             </ul>
-            <button id="add-item-btn" style="margin-top:8px;">新增項目</button>
+            <button id="add-item-btn" style="margin-top:8px;" data-testid="assert-add-item-btn">新增項目</button>
         </section>
 
         <!-- toHaveURL / toHaveTitle → tested via page itself -->
@@ -92,12 +92,12 @@
         <section class="demo-section">
             <h2>Soft Assertions 示範元素</h2>
             <div class="state-grid">
-                <div id="soft-a" class="badge active">軟斷言 A (可見)</div>
-                <div id="soft-b" class="badge inactive" style="display:none;">軟斷言 B (隱藏)</div>
+                <div id="soft-a" class="badge active" data-testid="assert-soft-a">軟斷言 A (可見)</div>
+                <div id="soft-b" class="badge inactive" style="display:none;" data-testid="assert-soft-b">軟斷言 B (隱藏)</div>
             </div>
         </section>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="assert-back-link">← 返回首頁</a>
     </div>
 
     <script>

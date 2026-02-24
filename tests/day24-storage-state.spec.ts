@@ -193,4 +193,14 @@ test.describe('Day 24：存取秘密寶箱 — Storage State 與 Cookie', () => 
     await authContext.close();
   });
 
+  test('💥 [錯誤示範] 無 storageState 下斷言 localStorage 有登入資料', async ({ browser }) => {
+    const context = await browser.newContext(); // 無 storageState，模擬未登入狀態
+    const page = await context.newPage();
+    await page.goto(`${BASE_URL}/pages/secure.html`);
+    const username = await page.evaluate(() => localStorage.getItem('currentUser'));
+    // 錯誤：未登入時 currentUser 為 null，但斷言等於 'testuser'
+    expect(username).toBe('testuser');
+    await context.close();
+  });
+
 });

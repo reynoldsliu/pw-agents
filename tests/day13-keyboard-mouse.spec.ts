@@ -179,4 +179,11 @@ test.describe('Day 13：鍵盤與滑鼠的魔法咒語', () => {
 
   });
 
+  test('💥 [錯誤示範] fill 後斷言錯誤的輸入值', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/actions-demo.html`);
+    await page.locator('#fill-input').fill('Hello Playwright');
+    // 錯誤：填入的是 'Hello Playwright'，但斷言 'Hello World'
+    await expect(page.locator('#fill-input')).toHaveValue('Hello World');
+  });
+
 });

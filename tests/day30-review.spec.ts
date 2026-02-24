@@ -9,6 +9,41 @@ const BASE_URL = 'http://localhost:8080';
 // 綜合運用：POM + Fixtures + 自訂 Matchers
 // =====================================================
 
+// --- 自訂 Matchers（整合 Day 29 精華）---
+expect.extend({
+  /** 驗證已登入狀態（URL 包含 secure） */
+  async toBeLoggedIn(page: Page) {
+    const url = page.url();
+    const pass = url.includes('secure');
+    return {
+      pass,
+      message: () => pass
+        ? `預期未登入，但 URL 為 ${url}`
+        : `預期已登入（URL 含 secure），但 URL 為 ${url}`,
+    };
+  },
+  /** 驗證頁面標題包含指定文字 */
+  async toHaveHeading(page: Page, expectedText: string) {
+    const heading = await page.locator('h1').textContent();
+    const pass = (heading ?? '').includes(expectedText);
+    return {
+      pass,
+      message: () => pass
+        ? `預期標題不含「${expectedText}」，但實際是「${heading}」`
+        : `預期標題含「${expectedText}」，但實際是「${heading}」`,
+    };
+  },
+});
+
+declare global {
+  namespace PlaywrightTest {
+    interface Matchers<R> {
+      toBeLoggedIn(): R;
+      toHaveHeading(text: string): R;
+    }
+  }
+}
+
 // --- Page Object Models ---
 
 class HomePage {
@@ -270,6 +305,43 @@ test.describe('Day 30：魔王關 — 綜合演練與最佳實踐', () => {
 
     // ✅ 關鍵斷言用一般 expect（失敗立刻中斷）
     await expect(page).toHaveTitle('Playwright 玩家攻略 — 測試網站');
+  });
+
+  // --- 關卡 8：整合自訂 Matchers ---
+
+  test('關卡 8 — 自訂 Matchers 整合（toBeLoggedIn）', async ({ loginPage, page }) => {
+    // 整合 Day 29 自訂 matcher 概念，在綜合演練中使用
+
+    // 登入前：不應已登入
+    await expect(page).not.toBeLoggedIn();
+
+    // 執行登入
+    await loginPage.login('testuser', 'Test@1234');
+    await page.waitForURL(/secure/, { timeout: 5000 });
+
+    // 登入後：URL 包含 secure → toBeLoggedIn 斷言通過
+    await expect(page).toBeLoggedIn();
+
+    // 自訂 toHaveHeading 驗證頁面標題
+    await expect(page).toHaveHeading('登入成功');
+  });
+
+  test('關卡 8 — not.toBeLoggedIn() 反向驗證', async ({ page }) => {
+    // 未登入時直接訪問首頁和登入頁，均不在 secure 頁面
+    await page.goto(BASE_URL);
+    await expect(page).not.toBeLoggedIn();
+
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    await expect(page).not.toBeLoggedIn();
+  });
+
+  test('💥 [錯誤示範] 綜合演練 — 密碼錯誤後斷言成功跳轉', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    await page.locator('#username').fill('testuser');
+    await page.locator('#password').fill('WrongPassword!');
+    await page.locator('button[type="submit"]').click();
+    // 錯誤：密碼錯誤，不應跳轉，截圖會顯示錯誤訊息畫面
+    await expect(page).toHaveURL(/secure/, { timeout: 3000 });
   });
 
 });

@@ -26,27 +26,27 @@
         <!-- alert -->
         <section class="demo-section">
             <h2>alert — 一般提示</h2>
-            <button class="dialog-btn alert-btn" id="alert-btn">觸發 Alert</button>
-            <div class="result-box" id="alert-result">尚未觸發</div>
+            <button class="dialog-btn alert-btn" id="alert-btn" data-testid="dialog-alert-btn">觸發 Alert</button>
+            <div class="result-box" id="alert-result" data-testid="dialog-alert-result">尚未觸發</div>
         </section>
 
         <!-- confirm: accept -->
         <section class="demo-section">
             <h2>confirm — 確認對話框</h2>
-            <button class="dialog-btn confirm-btn" id="confirm-delete-btn">刪除帳戶（confirm）</button>
-            <button class="dialog-btn confirm-btn" id="confirm-save-btn" style="background:#0277bd;">儲存變更（confirm）</button>
-            <div class="result-box" id="confirm-result">尚未觸發</div>
+            <button class="dialog-btn confirm-btn" id="confirm-delete-btn" data-testid="dialog-confirm-delete-btn">刪除帳戶（confirm）</button>
+            <button class="dialog-btn confirm-btn" id="confirm-save-btn" style="background:#0277bd;" data-testid="dialog-confirm-save-btn">儲存變更（confirm）</button>
+            <div class="result-box" id="confirm-result" data-testid="dialog-confirm-result">尚未觸發</div>
         </section>
 
         <!-- prompt -->
         <section class="demo-section">
             <h2>prompt — 輸入對話框</h2>
-            <button class="dialog-btn prompt-btn" id="prompt-name-btn">輸入姓名（prompt）</button>
-            <button class="dialog-btn prompt-btn" id="prompt-age-btn" style="background:#2e7d32;">輸入年齡（prompt，預設值 25）</button>
-            <div class="result-box" id="prompt-result">尚未觸發</div>
+            <button class="dialog-btn prompt-btn" id="prompt-name-btn" data-testid="dialog-prompt-name-btn">輸入姓名（prompt）</button>
+            <button class="dialog-btn prompt-btn" id="prompt-age-btn" style="background:#2e7d32;" data-testid="dialog-prompt-age-btn">輸入年齡（prompt，預設值 25）</button>
+            <div class="result-box" id="prompt-result" data-testid="dialog-prompt-result">尚未觸發</div>
         </section>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="dialog-back-link">← 返回首頁</a>
     </div>
 
     <script>

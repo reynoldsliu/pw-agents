@@ -152,4 +152,79 @@ test.describe('Day 10：攔截魔法 — 網路請求攔截與模擬', () => {
     expect(callCount).toBeGreaterThanOrEqual(prevCount);
   });
 
+  // --- 進階攔截：修改請求標頭與主體 ---
+
+  test('route.continue({ headers }) — 攔截並注入自訂請求標頭', async ({ page }) => {
+    let customHeaderSent = false;
+
+    await page.route('**/*.html', route => {
+      const headers = {
+        ...route.request().headers(),
+        'X-Playwright-Test': 'true',     // 注入自訂標頭
+        'X-Test-Environment': 'e2e',
+      };
+      customHeaderSent = true;
+      route.continue({ headers });
+    });
+
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    expect(customHeaderSent).toBe(true);
+    await expect(page.locator('h1')).toBeVisible();
+  });
+
+  test('request.method() / request.postData() — 捕捉 POST 請求內容', async ({ page }) => {
+    await page.goto(BASE_URL);
+
+    const captured: { method: string; body: string | null }[] = [];
+
+    // 攔截 API 請求並記錄請求方法與主體
+    await page.route('**/api/**', route => {
+      captured.push({
+        method: route.request().method(),
+        body: route.request().postData(),
+      });
+      route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+    });
+
+    // 從頁面觸發 POST 請求（模擬表單送出或 AJAX）
+    await page.evaluate(async () => {
+      await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'testuser', password: 'Test@1234' }),
+      });
+    });
+
+    expect(captured).toHaveLength(1);
+    expect(captured[0].method).toBe('POST');
+    expect(captured[0].body).toContain('testuser');
+  });
+
+  test('route.continue({ url }) — 攔截請求並改寫目標 URL', async ({ page }) => {
+    // 攔截對 /api/old-endpoint 的請求，轉發到 /api/new-endpoint
+    await page.route('**/api/old-endpoint', route => {
+      const newUrl = route.request().url().replace('old-endpoint', 'new-endpoint');
+      route.continue({ url: newUrl });
+    });
+
+    await page.goto(BASE_URL);
+
+    // 用 fulfill 模擬 new-endpoint 的回應
+    await page.route('**/api/new-endpoint', route => {
+      route.fulfill({ status: 200, body: '{"redirected":true}' });
+    });
+
+    // 驗證頁面仍正常顯示（URL 改寫不影響頁面其他內容）
+    await expect(page.locator('header')).toBeVisible();
+  });
+
+  test('💥 [錯誤示範] 攔截注入錯誤回應後元素消失', async ({ page }) => {
+    await page.route('**/pages/form-auth.html', route =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: '<html><body>攔截替換頁面</body></html>' })
+    );
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    // 錯誤：頁面被替換為純文字，找不到 #loginForm
+    await expect(page.locator('#loginForm')).toBeVisible({ timeout: 3000 });
+  });
+
 });

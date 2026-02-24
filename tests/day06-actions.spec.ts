@@ -196,4 +196,10 @@ test.describe('Day 06：Actions 互動魔法 — 展示各種頁面互動操作'
 
   });
 
+  test('💥 [錯誤示範] selectOption 指定不存在的選項值', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/actions-demo.html`);
+    // 錯誤：選項值 'fr'（法國）不在下拉選單中，selectOption 會拋出例外
+    await page.locator('#select-country').selectOption('fr');
+  });
+
 });

@@ -37,14 +37,14 @@
         <!-- 點擊觸發 filechooser -->
         <section class="demo-section">
             <h2>waitForEvent('filechooser') — 點擊觸發選擇器</h2>
-            <div class="upload-zone" id="file-chooser-zone">
+            <div class="upload-zone" id="file-chooser-zone" data-testid="download-chooser-zone">
                 <p>📤 點擊此區域選擇檔案</p>
                 <p style="color:#888; font-size:0.85rem;">支援 .txt, .pdf, .png, .jpg</p>
-                <input type="file" id="hidden-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg">
+                <input type="file" id="hidden-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg" data-testid="download-hidden-file-input">
             </div>
-            <button class="file-chooser-btn" id="open-chooser-btn">選擇檔案（按鈕觸發）</button>
-            <input type="file" id="btn-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg">
-            <div id="chooser-result" class="message" style="margin-top:8px;"></div>
+            <button class="file-chooser-btn" id="open-chooser-btn" data-testid="download-open-chooser-btn">選擇檔案（按鈕觸發）</button>
+            <input type="file" id="btn-file-input" style="display:none;" accept=".txt,.pdf,.png,.jpg" data-testid="download-btn-file-input">
+            <div id="chooser-result" class="message" style="margin-top:8px;" data-testid="download-chooser-result"></div>
         </section>
 
         <!-- 下載示範 -->
@@ -52,20 +52,20 @@
             <h2>waitForEvent('download') — 檔案下載</h2>
             <div class="download-item">
                 <span>📄 sample.txt — 測試用文字檔案</span>
-                <a id="download-txt" href="#" download="sample.txt" class="download-btn">下載</a>
+                <a id="download-txt" href="#" download="sample.txt" class="download-btn" data-testid="download-txt-link">下載</a>
             </div>
             <div class="download-item">
                 <span>📊 report.csv — 測試用 CSV 報表</span>
-                <a id="download-csv" href="#" download="report.csv" class="download-btn">下載</a>
+                <a id="download-csv" href="#" download="report.csv" class="download-btn" data-testid="download-csv-link">下載</a>
             </div>
             <div class="download-item">
                 <span>🗂️ data.json — 測試用 JSON 資料</span>
-                <button class="download-btn" id="download-json-btn">下載</button>
+                <button class="download-btn" id="download-json-btn" data-testid="download-json-btn">下載</button>
             </div>
-            <div id="download-result" class="message" style="margin-top:8px;"></div>
+            <div id="download-result" class="message" style="margin-top:8px;" data-testid="download-result"></div>
         </section>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="download-back-link">← 返回首頁</a>
     </div>
 
     <script>

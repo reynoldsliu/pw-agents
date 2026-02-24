@@ -150,4 +150,15 @@ test.describe('Day 19：戰鬥場景轉換 — 多分頁/視窗處理', () => {
 
     await newPage.close();
   });
+
+  test('💥 [錯誤示範] 新分頁標題斷言與實際不符', async ({ page, context }) => {
+    await page.goto(`${BASE_URL}/pages/multi-tab-demo.html`);
+    const [newPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.locator('#new-tab-link').click(),
+    ]);
+    await newPage.waitForLoadState();
+    // 錯誤：新分頁實際標題是「場景 1: 表單登入驗證」，不是「Playwright 官方文件」
+    await expect(newPage).toHaveTitle('Playwright 官方文件');
+  });
 });

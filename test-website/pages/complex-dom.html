@@ -31,24 +31,24 @@
         <!-- CSS Selector 定位 -->
         <section class="demo-section">
             <h2>CSS Selector — 商品卡片</h2>
-            <div class="product-grid">
-                <div class="product-card">
+            <div class="product-grid" data-testid="complex-product-grid">
+                <div class="product-card" data-testid="complex-product-card-1">
                     <div>筆記型電腦</div>
                     <div class="price">$32,000</div>
                     <span class="stock in-stock">有庫存</span>
-                    <button class="add-cart-btn">加入購物車</button>
+                    <button class="add-cart-btn" data-testid="complex-product-add-btn-1">加入購物車</button>
                 </div>
-                <div class="product-card">
+                <div class="product-card" data-testid="complex-product-card-2">
                     <div>無線滑鼠</div>
                     <div class="price">$890</div>
                     <span class="stock out-of-stock">無庫存</span>
-                    <button class="add-cart-btn" disabled>加入購物車</button>
+                    <button class="add-cart-btn" disabled data-testid="complex-product-add-btn-2">加入購物車</button>
                 </div>
-                <div class="product-card">
+                <div class="product-card" data-testid="complex-product-card-3">
                     <div>機械鍵盤</div>
                     <div class="price">$3,500</div>
                     <span class="stock in-stock">有庫存</span>
-                    <button class="add-cart-btn">加入購物車</button>
+                    <button class="add-cart-btn" data-testid="complex-product-add-btn-3">加入購物車</button>
                 </div>
             </div>
         </section>
@@ -70,30 +70,30 @@
         <!-- :has() 定位 -->
         <section class="demo-section">
             <h2>:has() — 找到包含特定子元素的容器</h2>
-            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;" data-testid="complex-order-item-1">
                 <span class="order-id">訂單 #A001</span>
                 <span class="status-tag" style="color:green;">已完成</span>
-                <button class="view-btn" style="float:right;">查看</button>
+                <button class="view-btn" style="float:right;" data-testid="complex-order-view-btn-1">查看</button>
             </div>
-            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;" data-testid="complex-order-item-2">
                 <span class="order-id">訂單 #A002</span>
                 <span class="status-tag pending-tag" style="color:orange;">待處理</span>
-                <button class="view-btn" style="float:right;">查看</button>
-                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;">取消</button>
+                <button class="view-btn" style="float:right;" data-testid="complex-order-view-btn-2">查看</button>
+                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;" data-testid="complex-order-cancel-btn-2">取消</button>
             </div>
-            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;">
+            <div class="order-item" style="padding:10px; border:1px solid #eee; border-radius:4px; margin:5px 0;" data-testid="complex-order-item-3">
                 <span class="order-id">訂單 #A003</span>
                 <span class="status-tag pending-tag" style="color:orange;">待處理</span>
-                <button class="view-btn" style="float:right;">查看</button>
-                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;">取消</button>
+                <button class="view-btn" style="float:right;" data-testid="complex-order-view-btn-3">查看</button>
+                <button class="cancel-btn" style="float:right; margin-right:5px; color:red; background:none; border:none; cursor:pointer;" data-testid="complex-order-cancel-btn-3">取消</button>
             </div>
         </section>
 
         <!-- Locator Chaining -->
         <section class="demo-section">
             <h2>Locator Chaining — 嵌套定位</h2>
-            <ul class="nested-list">
-                <li id="category-frontend">
+            <ul class="nested-list" data-testid="complex-nested-list">
+                <li id="category-frontend" data-testid="complex-category-frontend">
                     前端技術
                     <ul>
                         <li>React</li>
@@ -101,7 +101,7 @@
                         <li>Playwright</li>
                     </ul>
                 </li>
-                <li id="category-backend">
+                <li id="category-backend" data-testid="complex-category-backend">
                     後端技術
                     <ul>
                         <li>Node.js</li>
@@ -115,15 +115,15 @@
         <!-- XPath 定位 -->
         <section class="demo-section">
             <h2>XPath 定位</h2>
-            <div id="xpath-section">
+            <div id="xpath-section" data-testid="complex-xpath-section">
                 <p class="xpath-target">第一段：這是 XPath 定位目標</p>
                 <p class="xpath-target">第二段：另一個 XPath 定位目標</p>
-                <span id="xpath-span">透過 XPath id 定位</span>
+                <span id="xpath-span" data-testid="complex-xpath-span">透過 XPath id 定位</span>
             </div>
         </section>
 
-        <div id="result" class="message" style="margin-top:10px;"></div>
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <div id="result" class="message" style="margin-top:10px;" data-testid="complex-result"></div>
+        <a href="../index.html" class="back-link" data-testid="complex-back-link">← 返回首頁</a>
     </div>
 
     <script>

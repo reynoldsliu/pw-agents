@@ -142,4 +142,51 @@ test.describe('Day 12：守衛的考驗 — 表單驗證與登入流程', () => 
     await expect(page.locator('#message')).toContainText('登入成功');
   });
 
+  // --- 登入狀態持久化 ---
+
+  test('成功登入後 — localStorage 儲存登入狀態', async ({ page }) => {
+    await page.locator('#username').fill('testuser');
+    await page.locator('#password').fill('Test@1234');
+    await page.locator('button[type="submit"]').click();
+    await page.waitForURL(/secure/, { timeout: 5000 });
+
+    // 驗證 localStorage 已存入使用者資訊（登入狀態持久化的關鍵）
+    const currentUser = await page.evaluate(() => localStorage.getItem('currentUser'));
+    const currentRole = await page.evaluate(() => localStorage.getItem('currentRole'));
+
+    expect(currentUser).toBe('testuser');
+    expect(currentRole).toBe('一般使用者');
+  });
+
+  test('成功登入後 — admin 角色 localStorage 驗證', async ({ page }) => {
+    await page.locator('#username').fill('admin');
+    await page.locator('#password').fill('Admin@1234');
+    await page.locator('button[type="submit"]').click();
+    await page.waitForURL(/secure/, { timeout: 5000 });
+
+    const role = await page.evaluate(() => localStorage.getItem('currentRole'));
+    expect(role).toBe('管理員');
+  });
+
+  test('登入失敗後 — localStorage 不含使用者資訊', async ({ page }) => {
+    await page.locator('#username').fill('wronguser');
+    await page.locator('#password').fill('wrongpass');
+    await page.locator('button[type="submit"]').click();
+
+    await expect(page.locator('#message')).toContainText('登入失敗');
+
+    // 登入失敗時 localStorage 應無使用者資訊
+    const currentUser = await page.evaluate(() => localStorage.getItem('currentUser'));
+    expect(currentUser).toBeNull();
+  });
+
+  test('💥 [錯誤示範] 密碼錯誤後仍斷言跳轉到安全頁面', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    await page.locator('#username').fill('testuser');
+    await page.locator('#password').fill('WrongPassword!');
+    await page.locator('button[type="submit"]').click();
+    // 錯誤：密碼錯誤，頁面顯示錯誤訊息且不跳轉
+    await expect(page).toHaveURL(/secure/, { timeout: 3000 });
+  });
+
 });

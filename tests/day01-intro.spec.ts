@@ -72,4 +72,10 @@ test.describe('Day 01：冒險者登錄 — Playwright 基本冒煙測試', () =
     await expect(page.locator('footer')).toContainText('Playwright 玩家攻略');
   });
 
+  test('💥 [錯誤示範] 頁面標題斷言錯誤 — toHaveTitle 值不符', async ({ page }) => {
+    await page.goto(BASE_URL);
+    // 錯誤：實際標題為中文，此斷言必定失敗
+    await expect(page).toHaveTitle('Playwright Adventure Guide — Test Site');
+  });
+
 });

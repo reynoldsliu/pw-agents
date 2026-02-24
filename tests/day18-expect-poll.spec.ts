@@ -113,4 +113,49 @@ test.describe('Day 18：拆除不定時炸彈 — expect.poll() 精準等待', (
     // 驗證資料內容不為空
     await expect(page.locator('#api-result')).not.toBeEmpty();
   });
+
+  // 測試 8：intervals 退避策略說明
+  test('expect.poll() — intervals 退避策略（非固定間隔）', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/async-poll-demo`);
+    await page.locator('#start-counter-btn').click();
+
+    // intervals 是「退避策略」陣列，不是固定間隔：
+    // [200, 500, 1000] = 第1次等200ms、第2次等500ms、第3次起等1000ms
+    // 優點：初期密集輪詢，後期自動降頻，兼顧速度與效率
+    await expect.poll(async () => {
+      const text = await page.locator('#counter').textContent();
+      return parseInt(text || '0', 10);
+    }, {
+      timeout: 10000,
+      intervals: [200, 500, 1000],  // 退避策略：200ms → 500ms → 1000ms
+      message: '等待計數器達到 3（intervals 退避策略示範）',
+    }).toBeGreaterThanOrEqual(3);
+  });
+
+  // 測試 9：page.waitForFunction — 更底層的輪詢
+  test('page.waitForFunction() — 在瀏覽器端輪詢自訂條件', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/async-poll-demo`);
+    await page.locator('#start-counter-btn').click();
+
+    // waitForFunction 在瀏覽器端執行 JS，直到回傳 truthy 值
+    // 比 expect.poll 更底層，適合無法用 Locator 描述的複雜條件
+    await page.waitForFunction(
+      () => {
+        const el = document.getElementById('counter');
+        return el ? parseInt(el.textContent || '0', 10) >= 3 : false;
+      },
+      { timeout: 10000, polling: 500 }  // polling 可為 ms 數或 'raf'
+    );
+
+    const count = await page.locator('#counter').textContent();
+    expect(parseInt(count || '0', 10)).toBeGreaterThanOrEqual(3);
+  });
+
+  test('💥 [錯誤示範] expect.poll 超時 — 未觸發計數器就等待值變化', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/async-poll-demo.html`);
+    // 錯誤：沒有點擊 start-counter-btn，計數器永遠是 '0'，2 秒後逾時失敗
+    await expect.poll(async () => {
+      return await page.locator('#counter').textContent();
+    }, { timeout: 2000 }).toBe('5');
+  });
 });

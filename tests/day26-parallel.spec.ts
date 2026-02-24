@@ -37,6 +37,12 @@ test.describe.parallel('Day 26：分身術 — 平行測試（並行執行區塊
     await expect(page.locator('.product-grid')).toBeVisible();
   });
 
+  test('💥 [錯誤示範] 並行執行中斷言不存在的導覽文字', async ({ page }) => {
+    await page.goto(BASE_URL);
+    // 錯誤：導覽列沒有此文字，並行執行時同樣會失敗並捕獲截圖/錄影
+    await expect(page.getByText('不存在的導覽項目')).toBeVisible({ timeout: 3000 });
+  });
+
 });
 
 // =====================================================

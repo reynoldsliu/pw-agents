@@ -138,8 +138,8 @@ test.describe('Day 25：無障礙法師 — Accessibility Testing', () => {
     await page.goto(`${BASE_URL}/pages/locators-demo.html`);
 
     // 用 getByTestId 驗證元素標記符合規範
-    await expect(page.getByTestId('submit-btn')).toBeVisible();
-    await expect(page.getByTestId('cancel-btn')).toBeVisible();
+    await expect(page.getByTestId('locator-submit-btn')).toBeVisible();
+    await expect(page.getByTestId('locator-cancel-btn')).toBeVisible();
   });
 
   test('img alt 屬性 — 圖片有替代文字', async ({ page }) => {
@@ -154,6 +154,72 @@ test.describe('Day 25：無障礙法師 — Accessibility Testing', () => {
       expect(alt).not.toBeNull();
       expect(alt).not.toBe('');
     }
+  });
+
+  // --- 焦點管理（Focus Management）---
+
+  test('focus() / blur() — 焦點移入移出', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+
+    const usernameInput = page.locator('#username');
+
+    // 移入焦點
+    await usernameInput.focus();
+    const isFocused = await page.evaluate(() =>
+      document.activeElement?.id === 'username'
+    );
+    expect(isFocused).toBe(true);
+
+    // 移出焦點
+    await usernameInput.blur();
+    const isBlurred = await page.evaluate(() =>
+      document.activeElement?.id !== 'username'
+    );
+    expect(isBlurred).toBe(true);
+  });
+
+  test('Tab 順序 — 驗證焦點依序流經所有互動元素', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+
+    // 記錄 Tab 瀏覽的焦點順序
+    const focusOrder: string[] = [];
+
+    await page.locator('body').click();
+
+    for (let i = 0; i < 4; i++) {
+      await page.keyboard.press('Tab');
+      const activeId = await page.evaluate(() => document.activeElement?.id ?? '');
+      if (activeId) focusOrder.push(activeId);
+    }
+
+    // 表單應有 username → password → submit 的焦點順序
+    expect(focusOrder).toContain('username');
+    expect(focusOrder).toContain('password');
+    expect(focusOrder.indexOf('username')).toBeLessThan(focusOrder.indexOf('password'));
+  });
+
+  test('aria-describedby — 驗證輸入框有說明文字關聯', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+
+    // 若元素有 aria-describedby，輔助技術會讀出關聯的說明文字
+    // 此示範頁面用 aria-label；若有 aria-describedby 可用此方式驗證
+    const usernameInput = page.locator('#username');
+
+    // 驗證輸入框有可辨識的名稱（透過 aria-label 或 label 元素）
+    const ariaLabel = await usernameInput.getAttribute('aria-label');
+    const id = await usernameInput.getAttribute('id');
+
+    // 有 aria-label 或者有對應的 <label for="..."> 都符合無障礙標準
+    const hasAccessibleName = ariaLabel !== null ||
+      await page.locator(`label[for="${id}"]`).count() > 0;
+
+    expect(hasAccessibleName).toBe(true);
+  });
+
+  test('💥 [錯誤示範] getByRole 找不到頁面上不存在的角色', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    // 錯誤：頁面沒有 role="alertdialog" 的元素，逾時後斷言失敗
+    await expect(page.getByRole('alertdialog')).toBeVisible({ timeout: 3000 });
   });
 
 });

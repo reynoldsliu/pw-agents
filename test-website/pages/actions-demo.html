@@ -26,9 +26,9 @@
         <!-- click / dblclick -->
         <section class="demo-section">
             <h2>click / dblclick</h2>
-            <button id="click-btn">點擊我</button>
-            <span class="click-counter" id="click-count">0</span> 次
-            <div class="dblclick-area" id="dblclick-area">雙擊此區域啟動</div>
+            <button id="click-btn" data-testid="actions-click-btn">點擊我</button>
+            <span class="click-counter" id="click-count" data-testid="actions-click-count">0</span> 次
+            <div class="dblclick-area" id="dblclick-area" data-testid="actions-dblclick-area">雙擊此區域啟動</div>
         </section>
 
         <!-- fill / pressSequentially -->
@@ -36,15 +36,15 @@
             <h2>fill / pressSequentially</h2>
             <div class="form-group">
                 <label for="fill-input">填入文字 (fill)</label>
-                <input type="text" id="fill-input" placeholder="使用 fill() 填入">
+                <input type="text" id="fill-input" placeholder="使用 fill() 填入" data-testid="actions-fill-input">
             </div>
             <div class="form-group">
                 <label for="type-input">逐字輸入 (pressSequentially)</label>
-                <input type="text" id="type-input" placeholder="使用 pressSequentially() 輸入">
+                <input type="text" id="type-input" placeholder="使用 pressSequentially() 輸入" data-testid="actions-type-input">
             </div>
             <div class="form-group">
                 <label for="textarea-input">多行文字</label>
-                <textarea id="textarea-input" rows="3" placeholder="按 Enter 換行"></textarea>
+                <textarea id="textarea-input" rows="3" placeholder="按 Enter 換行" data-testid="actions-textarea-input"></textarea>
             </div>
         </section>
 
@@ -52,10 +52,10 @@
         <section class="demo-section">
             <h2>check / uncheck</h2>
             <div class="form-group">
-                <label><input type="checkbox" id="check-terms"> 我同意服務條款</label>
+                <label><input type="checkbox" id="check-terms" data-testid="actions-terms-checkbox"> 我同意服務條款</label>
             </div>
             <div class="form-group">
-                <label><input type="checkbox" id="check-newsletter" checked> 訂閱電子報</label>
+                <label><input type="checkbox" id="check-newsletter" checked data-testid="actions-newsletter-checkbox"> 訂閱電子報</label>
             </div>
         </section>
 
@@ -64,7 +64,7 @@
             <h2>selectOption</h2>
             <div class="form-group">
                 <label for="select-country">選擇國家</label>
-                <select id="select-country">
+                <select id="select-country" data-testid="actions-country-select">
                     <option value="">請選擇...</option>
                     <option value="tw">台灣</option>
                     <option value="jp">日本</option>
@@ -78,8 +78,8 @@
         <section class="demo-section">
             <h2>hover</h2>
             <div class="tooltip-container">
-                <button id="hover-btn">懸停在我上面</button>
-                <div class="tooltip" id="tooltip-text">🎉 你找到了！hover 觸發成功</div>
+                <button id="hover-btn" data-testid="actions-hover-btn">懸停在我上面</button>
+                <div class="tooltip" id="tooltip-text" data-testid="actions-tooltip">🎉 你找到了！hover 觸發成功</div>
             </div>
         </section>
 
@@ -88,12 +88,12 @@
             <h2>press (鍵盤)</h2>
             <div class="form-group">
                 <label for="key-input">按下 Enter 送出</label>
-                <input type="text" id="key-input" placeholder="輸入後按 Enter...">
+                <input type="text" id="key-input" placeholder="輸入後按 Enter..." data-testid="actions-key-input">
             </div>
         </section>
 
-        <div id="action-log" class="message" style="margin-top: 10px;"></div>
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <div id="action-log" class="message" style="margin-top: 10px;" data-testid="actions-action-log"></div>
+        <a href="../index.html" class="back-link" data-testid="actions-back-link">← 返回首頁</a>
     </div>
 
     <script>

@@ -118,4 +118,12 @@ test.describe('Day 17：擊退偷襲怪 — Dialog Handler 技能演練', () => 
     // 驗證頁面狀態正常
     await expect(page.locator('#alert-result')).toBeVisible();
   });
+
+  test('💥 [錯誤示範] dismiss confirm 後仍斷言「確認刪除」文字', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/dialogs-demo.html`);
+    page.on('dialog', dialog => dialog.dismiss()); // 拒絕對話框
+    await page.locator('#confirm-delete-btn').click();
+    // 錯誤：dismiss 後顯示「取消刪除」，但斷言「確認刪除」
+    await expect(page.locator('#confirm-result')).toContainText('確認刪除');
+  });
 });

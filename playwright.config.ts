@@ -9,7 +9,9 @@
  * - workers     CI 環境限制為單一 worker 避免資源競爭
  * - reporter    測試報告輸出格式（html → playwright-report/）
  * - baseURL     測試網站基底 URL（使用 `page.goto('/')` 即可）
- * - trace       失敗重試時收集執行軌跡（可用 npx playwright show-trace 查看）
+ * - screenshot  測試失敗時截圖，保存於 test-results/
+ * - video       測試失敗時保留錄影，通過則自動刪除
+ * - trace       測試失敗時保留執行軌跡（可用 npx playwright show-trace 查看）
  *
  * 詳細文件：https://playwright.dev/docs/test-configuration
  */
@@ -37,19 +39,29 @@ export default defineConfig({
     /* 測試網站基底 URL，使用 page.goto('/') 即可導航至首頁 */
     baseURL: 'http://localhost:8080',
 
-    /* 失敗重試時自動收集 trace，可用 `npx playwright show-trace` 查看 */
-    trace: 'on-first-retry',
+    /* 測試失敗時自動截圖，保存於 test-results/ 目錄 */
+    screenshot: 'only-on-failure',
+
+    /* 測試失敗時保留錄影，通過則自動刪除 */
+    video: 'retain-on-failure',
+
+    /* 測試失敗時保留 trace，可用 `npx playwright show-trace` 查看完整執行軌跡 */
+    trace: 'retain-on-failure',
   },
 
   /* 設定執行的瀏覽器 projects */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome', // 使用系統安裝的 Google Chrome（封閉網路環境適用）
+      },
     },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // webkit 停用 — 需下載額外 binary，封閉網路環境請預裝後再啟用
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
   ],
 });

@@ -30,26 +30,26 @@
         <!-- 計數器 (expect.poll 示範) -->
         <section class="demo-section">
             <h2>expect.poll() — 計數器</h2>
-            <div class="counter-display" id="counter">0</div>
+            <div class="counter-display" id="counter" data-testid="poll-counter">0</div>
             <div style="text-align:center;">
-                <button id="start-counter-btn">開始計數</button>
-                <button id="reset-counter-btn" style="margin-left:10px; background:none; border:1px solid #ccc; color:#666; padding:8px 16px; border-radius:4px; cursor:pointer;">重置</button>
+                <button id="start-counter-btn" data-testid="poll-start-counter-btn">開始計數</button>
+                <button id="reset-counter-btn" style="margin-left:10px; background:none; border:1px solid #ccc; color:#666; padding:8px 16px; border-radius:4px; cursor:pointer;" data-testid="poll-reset-counter-btn">重置</button>
             </div>
             <p style="text-align:center; color:#888; font-size:0.85rem;">計數到 5 時狀態變為「就緒」</p>
             <div style="text-align:center; margin-top:8px;">
-                狀態：<span id="counter-status" class="status-badge status-idle">閒置</span>
+                狀態：<span id="counter-status" class="status-badge status-idle" data-testid="poll-counter-status">閒置</span>
             </div>
         </section>
 
         <!-- 模擬 API 請求 (waitForResponse 示範) -->
         <section class="demo-section">
             <h2>waitForResponse — 模擬 API 載入</h2>
-            <button id="fetch-data-btn">載入資料</button>
+            <button id="fetch-data-btn" data-testid="poll-fetch-data-btn">載入資料</button>
             <div class="api-section" style="margin-top:10px;">
-                <div>狀態：<span id="api-status" class="status-badge status-idle">待請求</span></div>
-                <div id="api-result" style="margin-top:8px; display:none;">
+                <div>狀態：<span id="api-status" class="status-badge status-idle" data-testid="poll-api-status">待請求</span></div>
+                <div id="api-result" style="margin-top:8px; display:none;" data-testid="poll-api-result">
                     <strong>載入的資料：</strong>
-                    <ul id="api-data-list" style="list-style:none; padding:0; margin-top:5px;"></ul>
+                    <ul id="api-data-list" style="list-style:none; padding:0; margin-top:5px;" data-testid="poll-api-data-list"></ul>
                 </div>
             </div>
         </section>
@@ -57,15 +57,15 @@
         <!-- 進度條 (輪詢等待) -->
         <section class="demo-section">
             <h2>進度等待示範</h2>
-            <button id="start-progress-btn">開始處理</button>
+            <button id="start-progress-btn" data-testid="poll-start-progress-btn">開始處理</button>
             <div class="progress-bar" style="margin-top:10px;">
-                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-fill" id="progress-fill" data-testid="poll-progress-fill"></div>
             </div>
-            <div id="progress-text" style="text-align:right; font-size:0.85rem; color:#888;">0%</div>
-            <div id="progress-status" class="status-badge status-idle" style="margin-top:5px;">等待開始</div>
+            <div id="progress-text" style="text-align:right; font-size:0.85rem; color:#888;" data-testid="poll-progress-text">0%</div>
+            <div id="progress-status" class="status-badge status-idle" style="margin-top:5px;" data-testid="poll-progress-status">等待開始</div>
         </section>
 
-        <a href="../index.html" class="back-link">← 返回首頁</a>
+        <a href="../index.html" class="back-link" data-testid="poll-back-link">← 返回首頁</a>
     </div>
 
     <script>

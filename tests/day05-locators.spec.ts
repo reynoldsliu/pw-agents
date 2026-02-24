@@ -73,13 +73,13 @@ test.describe('Day 05：元素定位術 — 展示所有定位方式', () => {
 
   test('getByTestId — 用 data-testid 屬性定位提交按鈕', async ({ page }) => {
     // getByTestId 比對 data-testid 屬性，專為測試設計的定位方式
-    const submitBtn = page.getByTestId('submit-btn');
+    const submitBtn = page.getByTestId('locator-submit-btn');
     await expect(submitBtn).toBeVisible();
     await expect(submitBtn).toBeEnabled();
   });
 
   test('getByTestId — 用 data-testid 屬性定位取消按鈕', async ({ page }) => {
-    const cancelBtn = page.getByTestId('cancel-btn');
+    const cancelBtn = page.getByTestId('locator-cancel-btn');
     await expect(cancelBtn).toBeVisible();
   });
 
@@ -116,6 +116,12 @@ test.describe('Day 05：元素定位術 — 展示所有定位方式', () => {
     const actionResult = page.locator('#action-result');
     await expect(actionResult).toBeVisible();
     await expect(actionResult).toContainText('點擊了');
+  });
+
+  test('💥 [錯誤示範] getByTestId 指定拼字錯誤的 testid', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    // 錯誤：「locator-submit-botton」（應為 locator-submit-btn）不存在
+    await expect(page.getByTestId('locator-submit-botton')).toBeVisible({ timeout: 3000 });
   });
 
 });

@@ -138,4 +138,11 @@ test.describe('Day 11：等待動態魔物 — 非同步內容處理', () => {
     await expect(page.locator('#content h2')).toHaveText('🎉 Hello World!');
   });
 
+  test('💥 [錯誤示範] timeout 不足 — 動態載入需 3 秒但只等 1 秒', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    await page.locator('#startBtn').click();
+    // 錯誤：載入需 3000ms，但 timeout 僅設 1000ms，提前逾時失敗
+    await expect(page.locator('#content')).toBeVisible({ timeout: 1000 });
+  });
+
 });

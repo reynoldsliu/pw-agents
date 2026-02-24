@@ -128,4 +128,10 @@ test.describe('Day 09：等待的藝術 — 智慧等待策略', () => {
     await expect(page.locator('#password')).toHaveValue('Test@1234');
   });
 
+  test('💥 [錯誤示範] 未觸發載入就等待動態內容 — 等待逾時', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/dynamic-loading.html`);
+    // 錯誤：沒有點擊 startBtn，#content 不會出現，2 秒後逾時失敗
+    await expect(page.locator('#content')).toBeVisible({ timeout: 2000 });
+  });
+
 });

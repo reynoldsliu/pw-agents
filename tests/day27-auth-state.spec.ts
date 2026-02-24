@@ -29,6 +29,25 @@ test.describe('Day 27：免除重複登入 — Auth State 複用', () => {
 
   // --- 準備：儲存各角色的登入狀態 ---
 
+  test.afterAll(async () => {
+    // 測試套件結束後清理產生的 auth state 檔案
+    // 避免 auth state 在 CI 環境中殘留（可能含有敏感的 localStorage 資料）
+    const filesToClean = [TESTUSER_STATE, ADMIN_STATE, EDITOR_STATE];
+    for (const file of filesToClean) {
+      if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+        console.log(`已清理 auth state：${file}`);
+      }
+    }
+    // 清理空目錄（若存在且為空）
+    if (fs.existsSync(AUTH_STATE_DIR)) {
+      const remaining = fs.readdirSync(AUTH_STATE_DIR);
+      if (remaining.length === 0) {
+        fs.rmdirSync(AUTH_STATE_DIR);
+      }
+    }
+  });
+
   test.beforeAll(async ({ browser }) => {
     // 確保目錄存在
     if (!fs.existsSync(AUTH_STATE_DIR)) {
@@ -178,6 +197,16 @@ test.describe('Day 27：免除重複登入 — Auth State 複用', () => {
     // secure 頁面本身沒有跳轉保護，但 localStorage 應為空
     const username = await page.evaluate(() => localStorage.getItem('currentUser'));
     expect(username).toBeNull();
+  });
+
+  test('💥 [錯誤示範] 使用 testuser 的 storageState 但斷言管理員角色', async ({ browser }) => {
+    const context = await browser.newContext({ storageState: TESTUSER_STATE });
+    const page = await context.newPage();
+    await page.goto(`${BASE_URL}/pages/secure.html`);
+    const role = await page.evaluate(() => localStorage.getItem('currentRole'));
+    // 錯誤：testuser 的角色是「一般使用者」，不是「管理員」
+    expect(role).toBe('管理員');
+    await context.close();
   });
 
 });

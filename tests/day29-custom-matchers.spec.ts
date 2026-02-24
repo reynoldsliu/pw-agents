@@ -152,14 +152,14 @@ test.describe('Day 29：打造你的魔法書 — 自訂 Matchers', () => {
 
   test('toHaveTestId() — 驗證按鈕有正確的 testid', async ({ page }) => {
     await page.goto(`${BASE_URL}/pages/locators-demo.html`);
-    const submitBtn = page.locator('[data-testid="submit-btn"]');
-    await expect(submitBtn).toHaveTestId('submit-btn');
+    const submitBtn = page.locator('[data-testid="locator-submit-btn"]');
+    await expect(submitBtn).toHaveTestId('locator-submit-btn');
   });
 
   test('toHaveTestId() — 驗證取消按鈕的 testid', async ({ page }) => {
     await page.goto(`${BASE_URL}/pages/locators-demo.html`);
-    const cancelBtn = page.locator('[data-testid="cancel-btn"]');
-    await expect(cancelBtn).toHaveTestId('cancel-btn');
+    const cancelBtn = page.locator('[data-testid="locator-cancel-btn"]');
+    await expect(cancelBtn).toHaveTestId('locator-cancel-btn');
   });
 
   // --- 使用 toBeEmpty ---
@@ -195,7 +195,7 @@ test.describe('Day 29：打造你的魔法書 — 自訂 Matchers', () => {
   test('not.toContainChinese() — 驗證元素不含中文', async ({ page }) => {
     await page.goto(`${BASE_URL}/pages/locators-demo.html`);
     // 示範：用 evaluate 取得屬性值再做原生斷言
-    const submitBtn = page.locator('[data-testid="submit-btn"]');
+    const submitBtn = page.locator('[data-testid="locator-submit-btn"]');
     const testId = await submitBtn.getAttribute('data-testid');
     const chinesePattern = /[\u4e00-\u9fff]/;
     expect(chinesePattern.test(testId ?? '')).toBe(false);
@@ -221,6 +221,12 @@ test.describe('Day 29：打造你的魔法書 — 自訂 Matchers', () => {
     await page.locator('#username').fill('testuser');
     await expect(page.locator('#username')).not.toBeEmpty();          // 自訂 + not
     await expect(page.locator('#username')).toHaveValue('testuser');  // 內建
+  });
+
+  test('💥 [錯誤示範] 自訂 matcher toHaveButtonText 斷言錯誤的按鈕文字', async ({ page }) => {
+    await page.goto(`${BASE_URL}/pages/form-auth.html`);
+    // 錯誤：登入按鈕文字是「登入」，斷言「送出」時自訂 matcher 拋出有意義的錯誤訊息
+    await expect(page.locator('button[type="submit"]')).toHaveButtonText('送出');
   });
 
 });

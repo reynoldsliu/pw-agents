@@ -205,4 +205,12 @@ test.describe('Day 28：偵探模式 — 偵錯技巧大全', () => {
     expect(disabledResult).toBe(false);
   });
 
+  test('💥 [錯誤示範] 斷言正常頁面產生 JS 錯誤（實際沒有）', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', err => errors.push(err.message));
+    await page.goto(BASE_URL);
+    // 錯誤：首頁沒有 JS 執行錯誤，但斷言至少有 1 個
+    expect(errors.length).toBeGreaterThan(0);
+  });
+
 });

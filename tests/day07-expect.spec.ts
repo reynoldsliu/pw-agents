@@ -132,4 +132,44 @@ test.describe('Day 07：expect() 斷言大全 — 逐一展示每種斷言方式
     await expect(page).toHaveTitle('Day 07: 斷言示範');
   });
 
+  // --- 正規式（Regex）模式 ---
+
+  test('toHaveText() — 使用正規式比對（部分匹配）', async ({ page }) => {
+    // toHaveText 支援正規式，方便比對動態或部分內容
+    await expect(page.locator('#exact-text')).toHaveText(/Playwright/);
+    await expect(page.locator('#exact-text')).toHaveText(/測試框架$/);
+  });
+
+  test('toHaveAttribute() — 使用正規式比對屬性值', async ({ page }) => {
+    // toHaveAttribute 也支援正規式
+    await expect(page.locator('#link-with-href')).toHaveAttribute('href', /playwright\.dev/);
+    await expect(page.locator('#img-with-alt')).toHaveAttribute('alt', /示範/);
+  });
+
+  test('toContainText() — 使用正規式比對部分內容', async ({ page }) => {
+    // toContainText 也可接受正規式
+    await expect(page.locator('#partial-text')).toContainText(/自動化/);
+    await expect(page.locator('#partial-text')).toContainText(/Playwright\s.*工具/);
+  });
+
+  // --- timeout / message 選項 ---
+
+  test('expect() — 自訂 timeout 與 message 選項', async ({ page }) => {
+    // 可設定最長等待時間（ms）與自訂錯誤訊息
+    await expect(page.locator('#visible-item'), {
+      message: '可見元素在 5 秒內應出現',
+      timeout: 5000,
+    }).toBeVisible();
+
+    await expect(page.locator('#exact-text'), {
+      message: '#exact-text 應包含「Playwright」文字',
+    }).toContainText('Playwright');
+  });
+
+  test('💥 [錯誤示範] toHaveText 值與實際不符 — 斷言錯誤的框架名稱', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    // 錯誤：#exact-text 實際內容為「Playwright 測試框架」，不是「Selenium 測試框架」
+    await expect(page.locator('#exact-text')).toHaveText('Selenium 測試框架');
+  });
+
 });

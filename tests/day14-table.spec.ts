@@ -146,4 +146,11 @@ test.describe('Day 14：表格迷宮 — nth()、filter()、all()', () => {
     await expect(page.locator('#inactive-count')).toHaveText('1');
   });
 
+  test('💥 [錯誤示範] toHaveCount 斷言列數與實際不符', async ({ page }) => {
+    await page.goto(PAGE_URL);
+    const rows = page.locator('#table-body tr');
+    // 錯誤：實際有 5 列，但斷言 10 列
+    await expect(rows).toHaveCount(10);
+  });
+
 });
