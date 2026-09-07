@@ -1,0 +1,12 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  compile-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "20"}
+      - run: npm ci
+      # 外部測試網站會 flaky：CI 只驗證所有 spec 可編譯與收集，不實跑
+      - run: npx playwright test --list
