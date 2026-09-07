@@ -2,7 +2,7 @@
 
 > A 30-day Playwright practice set (following an iThome Ironman series) plus my own accessibility testing standards and review checklists.
 
-> **出處聲明**：`tests/` 的 30 天實作是跟隨 iThome 鐵人賽系列文章的練習（原作者連結待補），僅供學習紀錄；
+> **出處聲明**：`tests/` 的 30 天實作是跟隨 iThome 鐵人賽系列文章的練習（[原系列文章](https://ithelp.ithome.com.tw/users/20168913/ironman/8506)，著作權歸原作者），僅供學習紀錄；
 > `specs/` 的無障礙測試標準、review checklist 與速查表為本人原創。
 
 Playwright 測試工程實作集：30 天系統化練習 + 一套可重用的無障礙（accessibility）測試標準。
