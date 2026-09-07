@@ -1,5 +1,7 @@
 # pw-agents
 
+> A 30-day structured Playwright practice set plus reusable accessibility testing standards and review checklists.
+
 Playwright 測試工程實作集：30 天系統化練習 + 一套可重用的無障礙（accessibility）測試標準。
 
 ## 內容
