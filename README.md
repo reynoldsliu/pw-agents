@@ -2,24 +2,38 @@
 
 > A 30-day Playwright practice set (following an iThome Ironman series) plus my own accessibility testing standards and review checklists.
 
-> **出處聲明**：`tests/` 的 30 天實作是跟隨 iThome 鐵人賽系列文章的練習（[原系列文章](https://ithelp.ithome.com.tw/users/20168913/ironman/8506)，著作權歸原作者），僅供學習紀錄；
-> `specs/` 的無障礙測試標準、review checklist 與速查表為本人原創。
+**學 Playwright 自動化測試的 30 天練習，加上一套我自己寫的無障礙測試規範。**
 
-Playwright 測試工程實作集：30 天系統化練習 + 一套可重用的無障礙（accessibility）測試標準。
+> **出處聲明**
+> `tests/` 的 30 天實作是跟隨 [iThome 鐵人賽系列文章](https://ithelp.ithome.com.tw/users/20168913/ironman/8506)
+> 的練習，著作權歸原作者，這裡只是我的學習紀錄。
+> `specs/` 的無障礙測試標準、review checklist 與速查表是**我自己寫的**。
 
-## 內容
+---
 
-### `tests/` — 30 天 Playwright 實作
+## `specs/` — 無障礙測試規範（原創）
 
-每天一個主題、一個 spec 檔，由淺入深涵蓋：
+「這個網站身障者能不能用」不是靠感覺判斷的。這份規範把它拆成可執行的規則，
+用在 Angular + PrimeNG 的專案上：
 
-| 範圍 | 主題 |
+- **[測試標準](specs/accessibility-testing-standards-20260224v1.1.md)** —
+  哪些可以自動掃（axe）、哪些一定要人工看；`data-testid` 為主要定位屬性、
+  `aria-*` 為輔的策略與命名規範；PrimeNG 元件、動態與巢狀結構怎麼標
+- **[Review checklist](specs/accessibility-review-checklist-20260224v1.1.md)** —
+  可以直接拿去跑 code review 的檢查清單
+- **[速查表](specs/cheat-sheet-20260224v1.1.md)** — Playwright 常用語法
+
+## `tests/` — 30 天 Playwright 練習
+
+每天一個主題、一支測試檔，從基礎到工程化：
+
+| 範圍 | 學到什麼 |
 |---|---|
-| 基礎 | 設定檔、執行模式、locator 策略、actions、expect |
-| 穩定性 | soft assertion、等待策略、動態載入 |
-| 網路 | request 攔截、mock、network 斷言 |
-| 認證 | 表單登入、storage state、auth state 重用 |
-| 工程化 | 平行化、自訂 matcher、debug 技巧、test helpers |
+| 基礎 | 設定檔、執行模式、怎麼精準抓到元素（locator）、操作與斷言 |
+| 穩定性 | soft assertion、等待策略、動態載入的頁面怎麼測 |
+| 網路 | 攔截 request、mock 回應、驗證網路行為 |
+| 認證 | 表單登入、儲存登入狀態並重複使用（不用每個測試都登入一次） |
+| 工程化 | 平行執行、自訂斷言、debug 技巧、共用 helper |
 | 無障礙 | axe 自動掃描 + 人工檢核 |
 
 ### 逐日索引
@@ -57,21 +71,17 @@ Playwright 測試工程實作集：30 天系統化練習 + 一套可重用的無
 | 29 | [custom-matchers](tests/day29-custom-matchers.spec.ts) | 自訂 matcher |
 | 30 | [review](tests/day30-review.spec.ts) | 總複習 |
 
-設定檔（`playwright.config.ts`）含完整中文註解：CI 下 forbidOnly / retries / 單 worker、
-失敗自動截圖 + 錄影 + trace。
-
-### `specs/` — 測試標準文件
-
-- **accessibility-testing-standards** — 無障礙測試標準：哪些必須自動化（axe）、哪些必須人工
-- **accessibility-review-checklist** — 可直接拿去跑 review 的檢核清單
-- **cheat-sheet** — Playwright 速查表
+設定檔（`playwright.config.ts`）含完整中文註解：CI 環境下禁止 `test.only`、
+失敗自動重試、單 worker 避免資源競爭；測試失敗時自動留下截圖、錄影與執行軌跡（trace）。
 
 ## 執行
 
 ```sh
 npm install
-npx playwright install
-npx playwright test                  # 全部
-npx playwright test tests/day25-*    # 單一主題
-npx playwright show-report           # HTML 報告
+npx playwright install     # 下載瀏覽器
+npx playwright test        # 全部跑一遍
+npx playwright test tests/day25-*   # 只跑某一天
+npx playwright show-report          # 開啟 HTML 報告
 ```
+
+MIT License（`specs/` 為原創內容；`tests/` 為跟隨教學的練習）

@@ -10,6 +10,10 @@ test.describe('Day 01：冒險者登錄 — Playwright 基本冒煙測試', () =
     // 訪問首頁
     await page.goto(BASE_URL);
 
+    const l = await page.getByText('');
+    // l => customComponent => html
+    l.locator('[data-testid="custom-component"]');
+
     // 驗證瀏覽器分頁標題
     await expect(page).toHaveTitle('Playwright 玩家攻略 — 測試網站');
 

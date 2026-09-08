@@ -8,7 +8,7 @@
   "license": "MIT",
   "description": "Playwright test engineering: 30-day practice set + accessibility testing standards",
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "1.39.0",
     "@types/node": "^25.0.2"
   }
 }
